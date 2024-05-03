@@ -2,6 +2,7 @@ body {
     font-family: Roboto, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url('./resources/eielson.JPG');
 }
 
 header {
@@ -53,8 +54,9 @@ nav a:hover {
 .tile {
     width: 200px;
     height: 150px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #444;
     margin: 10px;
     display: flex;
     font-size: larger;
@@ -79,6 +81,5 @@ nav a:hover {
 }
 
 .tile:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    /* Add shadow effect on hover */
+    box-shadow: 0px 0px 10px red;
 }
