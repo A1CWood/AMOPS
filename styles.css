@@ -3,13 +3,13 @@ body {
     margin: 0;
     padding: 0;
     background-image: url('./resources/eielson.JPG');
+    color: #fff;
 }
 
 header {
     display: flex;
     flex-direction: row;
     background-color: #333;
-    color: #fff;
     padding: 10px 0;
     text-align: center;
     justify-content: space-between;
@@ -56,7 +56,6 @@ nav a:hover {
     width: 200px;
     height: 150px;
     background-color: #333;
-    color: #fff;
     border: 1px solid #444;
     margin: 10px;
     display: flex;

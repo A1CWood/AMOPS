@@ -1,0 +1,131 @@
+.dataentry {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: fit-content;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: #555;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+    max-width: 29%;
+    padding-bottom: 20px;
+    margin: 0px;
+}
+
+h3 {
+    margin: 5px;
+}
+
+.navbar {
+    top: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.content {
+    width: 67%;
+}
+
+.apron {
+    width: 30px;
+    height: 30px;
+    background-color: #666;
+    margin: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.apron P {
+    color: #fff;
+}
+
+.apron:hover {
+    background-color: #444;
+}
+
+.spotcheckdiv {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.spot {
+    align-items: center;
+    background-color: #666;
+    margin: 4px;
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    height: 60px;
+}
+
+.spot label {
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+input[type=checkbox] {
+    min-width: 20px;
+    min-height: 20px;
+}
+
+input.spotcheck:hover {
+    cursor: pointer;
+}
+
+.bonus {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.bbox {
+    display: flex;
+    padding: 10px;
+    background-color: #666;
+    margin: 4px;
+    align-items: center;
+}
+
+.bbox label {
+    margin: 10px;
+}
+
+.imgheader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.picked {
+    display: flex;
+    background-color: #777;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.picked input {
+    width: 100px;
+}
+
+.picked p {
+    padding-top: 10px;
+    margin: 5px;
+}
+
+.picked h1 {
+    margin: 0px;
+}

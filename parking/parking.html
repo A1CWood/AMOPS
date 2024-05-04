@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=!, initial-scale=1.0">
+    <title>Eielson AMOPS</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="./parking.css">
+</head>
+
+<body>
+    <header>
+        <img src="../resources/pacaf.png" alt="PACAF" id="PACAF">
+        <h1>Eielson Airfield Management</h1>
+        <img src="../resources/354oss.png" alt="354OSS" id="354OSS">
+    </header>
+    <nav>
+        <a href="./index.html">Home</a>
+        <a href="#">Contacts</a>
+        <a href="./aisr/aisr.html">AISR Tool</a>
+        <a href="#">Parking Tool</a>
+    </nav>
+    <div class="dataentry">
+        <div class="container">
+            <h3>Parking Apron</h3>
+            <div class="navbar">
+                <div class="apron" id="A" onclick="showChecklist('A')">
+                    <p>A</p>
+                </div>
+                <div class="apron" id="C" onclick="showChecklist('C')">
+                    <p>C</p>
+                </div>
+                <div class="apron" id="DV" onclick="showChecklist('DV')">
+                    <p>DV</p>
+                </div>
+                <div class="apron" id="E" onclick="showChecklist('E')">
+                    <p>E</p>
+                </div>
+                <div class="apron" id="NG" onclick="showChecklist('NG')">
+                    <p>NG</p>
+                </div>
+                <div class="apron" id="SG" onclick="showChecklist('SG')">
+                    <p>SG</p>
+                </div>
+                <div class="apron" id="K" onclick="showChecklist('K')">
+                    <p>K</p>
+                </div>
+                <div class="apron" id="M" onclick="showChecklist('M')">
+                    <p>M</p>
+                </div>
+                <div class="apron" id="O" onclick="showChecklist('O')">
+                    <p>O</p>
+                </div>
+                <div class="apron" id="P" onclick="showChecklist('P')">
+                    <p>P</p>
+                </div>
+                <div class="apron" id="Q" onclick="showChecklist('Q')">
+                    <p>Q</p>
+                </div>
+                <div class="apron" id="R" onclick="showChecklist('R')">
+                    <p>R</p>
+                </div>
+                <div class="apron" id="S" onclick="showChecklist('S')">
+                    <p>S</p>
+                </div>
+                <div class="apron" id="SR" onclick="showChecklist('SR')">
+                    <p>SR</p>
+                </div>
+                <div class="apron" id="T" onclick="showChecklist('T')">
+                    <p>T</p>
+                </div>
+                <div class="apron" id="TR" onclick="showChecklist('TR')">
+                    <p>TR</p>
+                </div>
+                <div class="apron" id="U" onclick="showChecklist('U')">
+                    <p>U</p>
+                </div>
+            </div>
+            <h3>Parking Spot</h3>
+            <div class="spotcheckdiv" id="spd">
+                <style>
+                    #A {
+                        background-color: #444;
+                    }
+                </style>
+                <div class="spot">
+                    <label>A1</label>
+                    <input type="checkbox" id="A1">
+                </div>
+                <div class="spot">
+                    <label>A2</label>
+                    <input type="checkbox" id="A2">
+                </div>
+                <div class="spot">
+                    <label>A3</label>
+                    <input type="checkbox" id="A3">
+                </div>
+                <div class="spot">
+                    <label>A4</label>
+                    <input type="checkbox" id="A4">
+                </div>
+                <div class="spot">
+                    <label>A5</label>
+                    <input type="checkbox" id="A5">
+                </div>
+                <div class="spot">
+                    <label>A6</label>
+                    <input type="checkbox" id="A6">
+                </div>
+                <div class="spot">
+                    <label>A7</label>
+                    <input type="checkbox" id="A7">
+                </div>
+                <div class="spot">
+                    <label>A8</label>
+                    <input type="checkbox" id="A8">
+                </div>
+                <div class="spot">
+                    <label>A9</label>
+                    <input type="checkbox" id="A9">
+                </div>
+                <div class="spot">
+                    <label>A10</label>
+                    <input type="checkbox" id="A10">
+                </div>
+                <div class="spot">
+                    <label>A11</label>
+                    <input type="checkbox" id="A11">
+                </div>
+                <div class="spot">
+                    <label>A12</label>
+                    <input type="checkbox" id="A12">
+                </div>
+                <div class="spot">
+                    <label>A13</label>
+                    <input type="checkbox" id="A13">
+                </div>
+                <div class="spot">
+                    <label>A14</label>
+                    <input type="checkbox" id="A14">
+                </div>
+                <div class="spot">
+                    <label>A15</label>
+                    <input type="checkbox" id="A15">
+                </div>
+                <div class="spot">
+                    <label>A16</label>
+                    <input type="checkbox" id="A16">
+                </div>
+            </div>
+            <h3>Additional Options</h3>
+            <div class="bonus">
+                <div class="bbox">
+                    <label for="header">Add Header</label>
+                    <input type="checkbox" id="header">
+                </div>
+                <div class="bbox">
+                    <label for="tagAircraft">Tag Aircraft</label>
+                    <input type="checkbox" id="tagAircraft">
+                </div>
+                <div class="bbox">
+                    <label for="aircraftDetails">Aircraft Details</label>
+                    <input type="checkbox" id="aircraftDetails">
+                </div>
+            </div>
+            <div class="imgheader">
+                <h3>Header Text</h3>
+                <input type="text">
+            </div>
+        </div>
+        <div class="spots">
+            <div class="picked">
+                <h1>A1</h1>
+                <p>Tag</p>
+                <input type="text">
+                <p>Callsign</p>
+                <input type="text">
+                <p>Aircraft Type</p>
+                <input type="text">
+                <p>ETA</p>
+                <input type="text">
+            </div>
+        </div>
+    </div>
+    <script src="parking.js"></script>
+</body>
+
+</html>
