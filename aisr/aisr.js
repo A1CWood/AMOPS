@@ -32,7 +32,7 @@ function generate() {
             tencount = '0' + tencount
         }
         callcount++;
-        if (!noZ) {
+        if (!noZ && callcount < 10) {
             callcount = '0' + callcount
         }
         if (String(iff).slice(-1) == 7) {
