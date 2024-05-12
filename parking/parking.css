@@ -1,3 +1,9 @@
+.inandout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .dataentry {
     display: flex;
     flex-direction: row;
@@ -66,7 +72,7 @@ h3 {
     margin: 4px;
     display: flex;
     flex-direction: column;
-    width: 40px;
+    width: 50px;
     height: 60px;
 }
 
@@ -114,6 +120,17 @@ input.spotcheck:hover {
     flex-direction: row;
 }
 
+
+#pickedContainer {
+    display: flex;
+    /* Enables flexbox layout */
+    flex-wrap: wrap;
+    /* Allows items to wrap onto multiple lines if needed */
+    justify-content: flex-start;
+    /* Aligns items to the start of the flex container */
+    align-items: flex-start;
+}
+
 .picked {
     display: flex;
     background-color: #777;
@@ -128,11 +145,18 @@ input.spotcheck:hover {
     border-color: black;
 }
 
+.pkinput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
 .picked input {
     width: 100px;
 }
 
-.picked p {
+.pkinput label {
     padding-top: 10px;
     margin: 5px;
 }
@@ -158,14 +182,31 @@ input.spotcheck:hover {
     border-color: green;
 }
 
-#jet {
+
+
+.plane {
+    width: 38px;
+    padding: 4px;
+}
+
+.jet {
     width: 26px;
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 5px;
 }
 
-#plane {
-    width: 38px;
-    padding: 4px;
+.output {
+    margin-top: 50px;
+    padding: 20px;
+    width: max-content;
+    background-color: #444;
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+}
+
+.apronimg {
+    background-image: url('../resources/SouthRamp.png');
+    background-size: 100% 100%;
 }
