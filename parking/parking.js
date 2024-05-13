@@ -49,7 +49,7 @@ function showChecklist(option) {
         var outputDiv = document.querySelector('.output');
         if (apronImageSrc) {
             updateCanvasBackground(apronImageSrc);
-            document.getElementById('saveButton').style.display = 'block';
+            document.getElementById('saveButton').style.display = 'flex';
         } else {
             document.querySelector('.output').style.display = "none";
             outputDiv.style.display = "none"; // Hide the output div if no apron image
@@ -147,6 +147,7 @@ function handleCheckboxChange(event) {
         removePickedDiv(label);
         removeIconFromCanvas(label);
         removeAircraftDetailTile(label);
+        clearTagFromCanvas(label);
     }
 }
 
@@ -204,6 +205,13 @@ function createPickedDiv(label, showTag, showDetails) {
 
     if (showTag) {
         var inputTag = document.createElement('input');
+        inputTag.setAttribute('type', 'text');
+        inputTag.setAttribute('maxlength', '7'); // Limit characters; adjust as needed based on tag size
+        inputTag.setAttribute('placeholder', '8 Char Limit');
+        inputTag.setAttribute('id', 'tagInput-' + label);
+        inputTag.addEventListener('input', function () {
+            drawTagOnCanvas(label, this.value);
+        });
         pickedDiv.appendChild(createDetailElement('Tag', inputTag));
     }
 
@@ -329,6 +337,7 @@ function toggleHeaderVisibility() {
     // Check if the checkbox is checked and toggle visibility accordingly
     if (headerCheckbox.checked) {
         headerDiv.style.display = 'block';  // Show the div
+        drawCanvas(document.getElementById('headerText').value); // Draw the existing header text
     } else {
         headerDiv.style.display = 'none';  // Hide the div
         document.getElementById('headerText').value = '';  // Clear the text input
@@ -336,38 +345,52 @@ function toggleHeaderVisibility() {
     }
 }
 
-// Function to draw on canvas
+// Function to draw or clear header text on canvas
 function drawCanvas(text) {
-    spotState.headerText = text; // Store the header text in state
-    redrawCanvas();
+    var canvas = document.getElementById("apronimg");
+    var ctx = canvas.getContext("2d");
+
+    var textHeight = 30;
+    var padding = 10;
+    var yPosition = 2;
+    var headerHeight = textHeight + padding * 2 + 2;  // Total height including padding
+
+    // Redraw the background in the header area before updating the text
+    redrawBackground(ctx, 0, yPosition, canvas.width, headerHeight, () => {
+        // Redraw the header text if any
+        if (text.trim() !== '') {
+            drawText(ctx, text, yPosition + padding, textHeight);
+        }
+    });
 }
 
-function drawText(ctx, text) {
-    ctx.font = "30px Roboto, Arial";  // Use Roboto, fallback to Arial
-    var textWidth = ctx.measureText(text).width;
-    var canvasCenterX = ctx.canvas.width / 2;
-    var textStartX = canvasCenterX - (textWidth / 2);
-    var textHeight = 30;  // Approximate height based on font size
 
-    // Adjust the position and size of the background rectangle
-    var padding = 5;
-    var rectX = textStartX - padding;
-    var rectY = 10;
-    var rectWidth = textWidth + (padding * 2);
+function drawText(ctx, text, yPosition, textHeight) {
+    var canvas = document.getElementById("apronimg");
+
+    ctx.font = "30px Roboto, Arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "black";
+
+    var textWidth = ctx.measureText(text).width;
+    var canvasCenterX = canvas.width / 2;
+    var rectX = canvasCenterX - textWidth / 2 - 5;
+    var rectWidth = textWidth + 10;
+    var rectY = yPosition - 2;
     var rectHeight = textHeight + 10;
 
-    // Draw white background for the text
+    // Draw white background for the text for better visibility
     ctx.fillStyle = "white";
     ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
 
-    // Draw black outline around the white rectangle
+    // Draw a black outline around the white rectangle
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
     ctx.strokeRect(rectX, rectY, rectWidth, rectHeight);
 
-    // Draw the text
+    // Finally, draw the text
     ctx.fillStyle = "black";
-    ctx.fillText(text, textStartX, 40);
+    ctx.fillText(text, canvasCenterX, rectY + rectHeight / 2 + 10);
 }
 
 
@@ -383,44 +406,6 @@ window.onload = function () {
     toggleHeaderVisibility();  // Apply the initial visibility state based on the checkbox
     drawCanvas('');  // Clear the canvas initially
 };
-
-
-function redrawCanvas() {
-    var canvas = document.getElementById("apronimg");
-    var ctx = canvas.getContext("2d");
-
-    // Clear the canvas before redrawing everything
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Redraw the background
-    if (spotState.background) {
-        var backgroundImg = new Image();
-        backgroundImg.src = spotState.background;
-        backgroundImg.onload = function () {
-            ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
-            // After background, redraw all planes/jets
-            redrawAllPlanes(ctx);
-            // Draw header text last so it's on top
-            if (spotState.headerText) {
-                drawText(ctx, spotState.headerText);
-            }
-        };
-    }
-}
-
-function redrawAllPlanes(ctx) {
-    Object.keys(spotState).forEach(label => {
-        if (label !== 'background' && label !== 'headerText') {
-            let data = spotState[label];
-            let img = new Image();
-            img.src = data.imageSrc;
-            img.onload = function () {
-                ctx.drawImage(img, data.x, data.y, 55, 55);
-            };
-        }
-    });
-}
-
 
 //------------------------------- Paint the Planes! -------------------------------------
 
@@ -478,10 +463,12 @@ function redrawBackground(ctx, x, y, width, height, callback) {
     var bgImg = new Image();
     bgImg.src = spotState.background; // Ensure the background image source is stored in spotState
     bgImg.onload = function () {
+        // Redraw the specific area of the background
         ctx.drawImage(bgImg, x, y, width, height, x, y, width, height);
-        callback(); // Call the callback to draw the icon after the background has been redrawn
-    }
+        callback(); // Execute the callback to continue drawing the tag
+    };
 }
+
 
 function updateCanvasBackground(imageSrc) {
     var canvas = document.getElementById("apronimg");
@@ -517,7 +504,134 @@ function removeIconFromCanvas(label) {
 }
 
 
-// -------------------------------------- Detail Tiles ---------------------------------------
+// -------------------------------------- Tag the Aircraft ---------------------------------------
+
+var tagImg = new Image();
+tagImg.src = '../resources/tag.png'; // Load the image once outside the function
+
+function drawTagOnCanvas(label, text) {
+    var canvas = document.getElementById("apronimg");
+    var ctx = canvas.getContext("2d");
+    var coordinates = getCoordinatesForLabel(label);
+
+    // Define the tag position and size
+    var tagWidth = 100;
+    var tagHeight = 15;
+    var tagX = coordinates.x - 53;
+    var tagY = coordinates.y + 92;
+
+    // Check if the text is empty
+    if (text.trim() === '') {
+        // If text is empty, restore the background only
+        redrawBackgroundTag(ctx, tagX, tagY, tagWidth, tagHeight, -Math.PI / 3.5, () => {
+            // Actions after background has been redrawn, if any
+        });
+    } else {
+        // Proceed with loading and drawing the tag with text
+        var tagImg = new Image();
+        tagImg.src = '../resources/tag.png';
+        tagImg.onload = () => {
+            redrawBackground(ctx, tagX, tagY, tagWidth, tagHeight, () => {
+                // Save the current context state
+                ctx.save();
+
+                // Calculate the center of the tag for rotation
+                var centerX = tagX + tagWidth / 2;
+                var centerY = tagY + tagHeight / 2;
+
+                // Translate to the center, rotate, then translate back
+                ctx.translate(centerX, centerY);
+                ctx.rotate(-Math.PI / 3.5); // Adjust the rotation angle as necessary
+                ctx.translate(-centerX, -centerY);
+
+                // Draw the tag background
+                ctx.drawImage(tagImg, tagX, tagY, tagWidth, tagHeight);
+
+                // Set up text properties
+                ctx.font = '12px Arial';
+                ctx.fillStyle = 'black';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'end';
+
+                // Draw the text at the adjusted position
+                ctx.fillText(text, tagX + 3, tagY + 12);
+
+                // Restore the context to the previous state
+                ctx.restore();
+            });
+        };
+    }
+}
+
+
+function calculateRotatedBoundingBox(x, y, width, height, angle) {
+    // Center of the rectangle
+    var centerX = x + width / 2;
+    var centerY = y + height / 2;
+
+    // Corners of the rectangle relative to the center
+    var corners = [
+        { x: -width / 2, y: -height / 2 },
+        { x: width / 2, y: -height / 2 },
+        { x: width / 2, y: height / 2 },
+        { x: -width / 2, y: height / 2 }
+    ];
+
+    // Calculate new corners after rotation
+    var sin = Math.sin(angle);
+    var cos = Math.cos(angle);
+    var cornersRotated = corners.map(corner => ({
+        x: corner.x * cos - corner.y * sin + centerX,
+        y: corner.x * sin + corner.y * cos + centerY
+    }));
+
+    // Find min/max coordinates to cover the entire area
+    var minX = Math.min(...cornersRotated.map(corner => corner.x));
+    var maxX = Math.max(...cornersRotated.map(corner => corner.x));
+    var minY = Math.min(...cornersRotated.map(corner => corner.y));
+    var maxY = Math.max(...cornersRotated.map(corner => corner.y));
+
+    return { minX, maxX, minY, maxY };
+}
+
+function redrawBackgroundTag(ctx, x, y, width, height, angle, callback) {
+    var { minX, minY, maxX, maxY } = calculateRotatedBoundingBox(x, y, width, height, angle);
+
+    // Clear the area
+    ctx.clearRect(minX, minY, maxX - minX, maxY - minY);
+
+    // Optionally, redraw background image or color if needed
+    var bgImg = new Image();
+    bgImg.src = spotState.background; // Replace with your actual background image
+    bgImg.onload = function () {
+        ctx.drawImage(bgImg, minX, minY, maxX - minX, maxY - minY, minX, minY, maxX - minX, maxY - minY);
+        if (callback) callback();
+    };
+}
+
+function clearTagFromCanvas(label) {
+    var ctx = document.getElementById("apronimg").getContext("2d");
+    var coordinates = getCoordinatesForLabel(label);
+
+    // Define the tag position and size
+    var tagWidth = 100;
+    var tagHeight = 15;
+    var tagX = coordinates.x - 53;
+    var tagY = coordinates.y + 92;
+
+    // Clear the tag area
+    redrawBackgroundTag(ctx, tagX, tagY, tagWidth, tagHeight, -Math.PI / 3.5, () => {
+        console.log('Tag area cleared for label:', label);
+    });
+}
+
+
+
+
+
+
+
+
 
 
 //-------------------------- Save Button --------------------------

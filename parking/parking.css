@@ -276,3 +276,30 @@ input.spotcheck:hover {
 .aircraft-eta {
     margin-top: 5px;
 }
+
+#saveButton {
+    display: flex;
+    flex-direction: row;
+    font-family: roboto;
+    position: absolute;
+    right: 100px;
+    top: 75%;
+    transform: translateY(-50%);
+    background: #98faad;
+    /* Light grey background, adjust as needed */
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#saveButton img {
+    width: 50px;
+    /* Adjust size as needed */
+    height: auto;
+}
+
+#saveButton h1 {
+    margin-left: 10px;
+
+}
