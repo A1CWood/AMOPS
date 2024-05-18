@@ -86,7 +86,7 @@ function showChecklist(option) {
             'S': createSpotsList(16, 'S'),
             'SR': createSpotsList(16, 'SR'),
             'T': createSpotsList(12, 'T'),
-            'TR': createSpotsList(22, 'TR'),
+            'TR': createSpotsList(12, 'TR', 11),
             'U': createSpotsList(12, 'U'),
         };
         const spotsHTML = spotsData[option] || 'No spots available for this selection.';
@@ -115,9 +115,9 @@ function showChecklist(option) {
 
 window.showChecklist = showChecklist;
 
-function createSpotsList(count, apron) {
+function createSpotsList(count, apron, start = 1) {
     let spots = '';
-    for (let i = 1; i <= count; i++) {
+    for (let i = start; i < start + count; i++) {
         spots += `
             <div class="spot">
                 <label for="${apron + i}">${apron + i}</label>
@@ -243,7 +243,7 @@ function createPickedDiv(label, showTag, showDetails, canvasManager) {
         const inputTag = document.createElement('input');
         inputTag.setAttribute('type', 'text');
         inputTag.setAttribute('maxlength', '7');
-        inputTag.setAttribute('placeholder', '8 Char Limit');
+        inputTag.setAttribute('placeholder', '7 Char Limit');
         inputTag.setAttribute('id', 'tagInput-' + label);
         inputTag.addEventListener('input', function () {
             const coordinates = canvasManager.getCoordinatesForLabel(label, "plane");

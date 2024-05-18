@@ -96,13 +96,15 @@ export class CanvasManager {
         this.ctx.fillText(text, x, y);
     }
 
-    drawTagOnCanvas(label, text, coordinates) {
+    drawTagOnCanvas(label, text) {
+        const { x, y, rotation } = this.getCoordinatesForTag(label);
+        const mirror = this.getMirrorStateForLabel(label, "tag");
+
+        console.log(`Drawing tag on canvas for label: ${label} with text: ${text} and mirror: ${mirror}`);
+
         const tagWidth = 100;
         const tagHeight = 15;
-        const tagX = coordinates.x - 53;
-        const tagY = coordinates.y + 92;
-
-        console.log(`Drawing tag on canvas for label: ${label} with text: ${text}`);
+        const textOffset = mirror ? tagWidth * 0.2 : 3; // Offset for mirrored text
 
         if (text.trim() === '') {
             this.clearTagFromCanvas(label);
@@ -110,16 +112,27 @@ export class CanvasManager {
         }
 
         this.loadImage('../resources/tag.png', (tagImg) => {
-            this.redrawBackground(tagX, tagY, tagWidth, tagHeight, () => {
+            this.redrawBackground(x, y, tagWidth, tagHeight, () => {
                 this.ctx.save();
-                this.ctx.translate(tagX + tagWidth / 2, tagY + tagHeight / 2);
-                this.ctx.rotate(-Math.PI / 3.5);
-                this.ctx.translate(-(tagX + tagWidth / 2), -(tagY + tagHeight / 2));
-                this.ctx.drawImage(tagImg, tagX, tagY, tagWidth, tagHeight);
-                this.ctx.font = '12px Arial';
+                this.ctx.translate(x + tagWidth / 2, y + tagHeight / 2); // Center of the tag
+                this.ctx.rotate(rotation);
+                if (mirror) {
+                    this.ctx.scale(-1, 1);
+                }
+                this.ctx.translate(-tagWidth / 2, -tagHeight / 2); // Back to the top-left of the tag
+                this.ctx.drawImage(tagImg, 0, 0, tagWidth, tagHeight);
+
+                // Reset the mirroring for text
+                if (mirror) {
+                    this.ctx.translate(tagWidth / 2, tagHeight / 2);
+                    this.ctx.scale(-1, 1);
+                    this.ctx.translate(-tagWidth / 2, -tagHeight / 2);
+                }
+
+                this.ctx.font = 'bold 12px Arial';
                 this.ctx.fillStyle = 'black';
                 this.ctx.textAlign = 'left';
-                this.ctx.fillText(text, tagX + 3, tagY + 12);
+                this.ctx.fillText(text, textOffset, 12);
                 this.ctx.restore();
             });
         });
@@ -128,15 +141,20 @@ export class CanvasManager {
 
     clearTagFromCanvas(label) {
         console.log(`Clearing tag from canvas for label: ${label}`);
-        const coordinates = this.getCoordinatesForLabel(label, "plane"); // Assuming the tag coordinates are based on the plane coordinates
-        this.redrawBackgroundTag(coordinates.x - 53, coordinates.y + 92, 100, 15, -Math.PI / 3.5, () => {
+        const { x, y, rotation } = this.getCoordinatesForTag(label);
+        const mirror = this.getMirrorStateForLabel(label, "tag");
+
+        this.redrawBackgroundTag(x, y, 100, 15, rotation, mirror, () => {
             console.log(`Tag background redrawn for ${label}`);
         });
     }
-    redrawBackgroundTag(x, y, width, height, angle, callback) {
+
+
+
+    redrawBackgroundTag(x, y, width, height, angle, mirror, callback) {
         var { minX, minY, maxX, maxY } = this.calculateRotatedBoundingBox(x, y, width, height, angle);
 
-
+        // Clear the area
         this.ctx.clearRect(minX, minY, maxX - minX, maxY - minY);
 
         // Optionally, redraw background image or color if needed
@@ -145,6 +163,9 @@ export class CanvasManager {
             if (callback) callback();
         });
     }
+
+
+
     calculateRotatedBoundingBox(x, y, width, height, angle) {
         // Center of the rectangle
         var centerX = x + width / 2;
@@ -215,7 +236,8 @@ export class CanvasManager {
 
     getCoordinatesForLabel(label, type) {
         switch (label) {
-            case 'SR1': return { x: 68.5, y: 173, rotation: 180 * Math.PI / 180 };
+            // SOUTH RAMP
+            case 'SR1': return { x: 69, y: 173, rotation: 180 * Math.PI / 180 };
             case 'SR2': return { x: 134, y: 173, rotation: 180 * Math.PI / 180 };
             case 'SR3': return { x: 200, y: 173, rotation: 180 * Math.PI / 180 };
             case 'SR4': return { x: 266, y: 173, rotation: 180 * Math.PI / 180 };
@@ -231,25 +253,98 @@ export class CanvasManager {
             case 'SR14': return { x: 920, y: 173, rotation: 180 * Math.PI / 180 };
             case 'SR15': return { x: 986, y: 173, rotation: 180 * Math.PI / 180 };
             case 'SR16': return { x: 1051, y: 173, rotation: 180 * Math.PI / 180 };
+            // TANKER ROW
+            case 'TR11': return { x: 29, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR12': return { x: 93, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR13': return { x: 157, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR14': return { x: 222, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR15': return { x: 286, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR16': return { x: 350, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR17': return { x: 414, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR18': return { x: 478, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR19': return { x: 541, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR20': return { x: 605, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR21': return { x: 671, y: 135, rotation: 30 * Math.PI / 180 };
+            case 'TR22': return { x: 736, y: 135, rotation: 30 * Math.PI / 180 };
+            //OSCAR
+            case 'O1': return { x: 89, y: 213, rotation: 0 };
+            case 'O2': return { x: 283, y: 213, rotation: 0 };
+            case 'O3': return { x: 463, y: 213, rotation: 0 };
+            case 'O4': return { x: 653, y: 213, rotation: 0 };
+            case 'O5': return { x: 825, y: 213, rotation: 0 };
+
             default: return { x: 10, y: 10, rotation: 0 }; // Default coordinates
         }
     }
 
+    getCoordinatesForTag(label) {
+        switch (label) {
+            //SOUTH RAMP
+            case 'SR1': return { x: 15, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR2': return { x: 80, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR3': return { x: 146, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR4': return { x: 212, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR5': return { x: 277, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR6': return { x: 343, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR7': return { x: 408, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR8': return { x: 474, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR9': return { x: 539, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR10': return { x: 605, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR11': return { x: 670, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR12': return { x: 735, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR13': return { x: 801, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR14': return { x: 866, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR15': return { x: 932, y: 263, rotation: -50 * Math.PI / 180 };
+            case 'SR16': return { x: 997, y: 263, rotation: -50 * Math.PI / 180 };
+            //TANKER ROW
+            case 'TR11': return { x: 19, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR12': return { x: 83, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR13': return { x: 147, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR14': return { x: 212, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR15': return { x: 276, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR16': return { x: 340, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR17': return { x: 404, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR18': return { x: 468, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR19': return { x: 531, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR20': return { x: 595, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR21': return { x: 661, y: 230, rotation: 50 * Math.PI / 180 };
+            case 'TR22': return { x: 726, y: 230, rotation: 50 * Math.PI / 180 };
+            //OSCAR
+            case 'O1': return { x: 109, y: 292, rotation: 30 * Math.PI / 180 };
+            case 'O2': return { x: 303, y: 292, rotation: 30 * Math.PI / 180 };
+            case 'O3': return { x: 483, y: 292, rotation: 30 * Math.PI / 180 };
+            case 'O4': return { x: 673, y: 292, rotation: 30 * Math.PI / 180 };
+            case 'O5': return { x: 845, y: 292, rotation: 30 * Math.PI / 180 };
+
+            default: return { x: 10, y: 10, rotation: 0 }; // Default coordinates for tag
+        }
+    }
+
+
     getMirrorStateForLabel(label, type) {
         console.log(`Getting mirror state for label: ${label} and type: ${type}`);
+        const labelLetters = label.replace(/[0-9]/g, '');
         if (type === 'jet') {
-            switch (label) {
+            switch (labelLetters) {
                 default: return false;
             }
         } else if (type === 'plane') {
-            switch (label) {
+            switch (labelLetters) {
                 default: return false;
             }
         } else if (type === '2jet') {
-            switch (label) {
+            switch (labelLetters) {
                 default: return true;
+            }
+        }
+        else if (type === 'tag') {
+            switch (labelLetters) {
+                case 'TR': return true;
+                case 'O': return true;
+                default: return false;
             }
         }
         return false;
     }
+
 }
