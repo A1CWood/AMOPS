@@ -190,10 +190,14 @@ input.spotcheck:hover {
 }
 
 .jet {
-    width: 26px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 5px;
+    width: 38px;
+    padding: 4px;
+
+}
+
+.jet2 {
+    width: 38px;
+    padding: 4px;
 }
 
 .output {
