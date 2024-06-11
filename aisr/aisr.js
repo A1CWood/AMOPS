@@ -36,7 +36,9 @@ function generate() {
             callcount = '0' + callcount
         }
         if (String(iff).slice(-1) == 7) {
-            iff = iff + 3
+            iff++
+            iff++
+            iff++
         }
         else {
             iff++
