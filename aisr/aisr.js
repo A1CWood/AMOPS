@@ -35,12 +35,15 @@ function generate() {
         if (!noZ && callcount < 10) {
             callcount = '0' + callcount
         }
+        if (iff>999){
         if (String(iff).slice(-1) == 7) {
-            iff = iff + 3
+            iff++
+            iff++
+            iff++
         }
         else {
             iff++
-        }
+        }}
         split[0] = preten + tencount;
         split[2] = precall + callcount;
         split[4] = iff
