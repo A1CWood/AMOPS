@@ -107,36 +107,35 @@ export class CanvasManager {
         const textOffset = mirror ? tagWidth * 0.2 : 3; // Offset for mirrored text
 
         if (text.trim() === '') {
-            this.clearTagFromCanvas(label);
             return;
         }
 
         this.loadImage('../resources/tag.png', (tagImg) => {
-            this.redrawBackground(x, y, tagWidth, tagHeight, () => {
-                this.ctx.save();
-                this.ctx.translate(x + tagWidth / 2, y + tagHeight / 2); // Center of the tag
-                this.ctx.rotate(rotation);
-                if (mirror) {
-                    this.ctx.scale(-1, 1);
-                }
-                this.ctx.translate(-tagWidth / 2, -tagHeight / 2); // Back to the top-left of the tag
-                this.ctx.drawImage(tagImg, 0, 0, tagWidth, tagHeight);
+            this.ctx.save();
+            this.ctx.translate(x + tagWidth / 2, y + tagHeight / 2); // Center of the tag
+            this.ctx.rotate(rotation);
+            if (mirror) {
+                this.ctx.scale(-1, 1);
+            }
+            this.ctx.translate(-tagWidth / 2, -tagHeight / 2); // Back to the top-left of the tag
+            this.ctx.drawImage(tagImg, 0, 0, tagWidth, tagHeight);
 
-                // Reset the mirroring for text
-                if (mirror) {
-                    this.ctx.translate(tagWidth / 2, tagHeight / 2);
-                    this.ctx.scale(-1, 1);
-                    this.ctx.translate(-tagWidth / 2, -tagHeight / 2);
-                }
+            // Reset the mirroring for text
+            if (mirror) {
+                this.ctx.translate(tagWidth / 2, tagHeight / 2);
+                this.ctx.scale(-1, 1);
+                this.ctx.translate(-tagWidth / 2, -tagHeight / 2);
+            }
 
-                this.ctx.font = 'bold 12px Arial';
-                this.ctx.fillStyle = 'black';
-                this.ctx.textAlign = 'left';
-                this.ctx.fillText(text, textOffset, 12);
-                this.ctx.restore();
-            });
+            this.ctx.font = 'bold 12px Arial';
+            this.ctx.fillStyle = 'black';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText(text, textOffset, 12);
+            this.ctx.restore();
         });
     }
+
+
 
 
     clearTagFromCanvas(label) {
@@ -144,10 +143,18 @@ export class CanvasManager {
         const { x, y, rotation } = this.getCoordinatesForTag(label);
         const mirror = this.getMirrorStateForLabel(label, "tag");
 
-        this.redrawBackgroundTag(x, y, 100, 15, rotation, mirror, () => {
+        const tagWidth = 100;
+        const tagHeight = 15;
+
+        const { minX, minY, maxX, maxY } = this.calculateRotatedBoundingBox(x, y, tagWidth, tagHeight, rotation);
+
+        this.ctx.clearRect(minX, minY, maxX - minX, maxY - minY);
+
+        this.redrawBackground(minX, minY, maxX - minX, maxY - minY, () => {
             console.log(`Tag background redrawn for ${label}`);
         });
     }
+
 
 
 
@@ -167,34 +174,30 @@ export class CanvasManager {
 
 
     calculateRotatedBoundingBox(x, y, width, height, angle) {
-        // Center of the rectangle
-        var centerX = x + width / 2;
-        var centerY = y + height / 2;
+        const radians = angle;
+        const cx = x + width / 2;
+        const cy = y + height / 2;
 
-        // Corners of the rectangle relative to the center
-        var corners = [
-            { x: -width / 2, y: -height / 2 },
-            { x: width / 2, y: -height / 2 },
-            { x: width / 2, y: height / 2 },
-            { x: -width / 2, y: height / 2 }
+        const corners = [
+            { x: x - cx, y: y - cy },
+            { x: x + width - cx, y: y - cy },
+            { x: x + width - cx, y: y + height - cy },
+            { x: x - cx, y: y + height - cy }
         ];
 
-        // Calculate new corners after rotation
-        var sin = Math.sin(angle);
-        var cos = Math.cos(angle);
-        var cornersRotated = corners.map(corner => ({
-            x: corner.x * cos - corner.y * sin + centerX,
-            y: corner.x * sin + corner.y * cos + centerY
+        const rotatedCorners = corners.map(corner => ({
+            x: cx + (corner.x * Math.cos(radians) - corner.y * Math.sin(radians)),
+            y: cy + (corner.x * Math.sin(radians) + corner.y * Math.cos(radians))
         }));
 
-        // Find min/max coordinates to cover the entire area
-        var minX = Math.min(...cornersRotated.map(corner => corner.x));
-        var maxX = Math.max(...cornersRotated.map(corner => corner.x));
-        var minY = Math.min(...cornersRotated.map(corner => corner.y));
-        var maxY = Math.max(...cornersRotated.map(corner => corner.y));
+        const minX = Math.min(...rotatedCorners.map(corner => corner.x));
+        const maxX = Math.max(...rotatedCorners.map(corner => corner.x));
+        const minY = Math.min(...rotatedCorners.map(corner => corner.y));
+        const maxY = Math.max(...rotatedCorners.map(corner => corner.y));
 
         return { minX, maxX, minY, maxY };
     }
+
 
     drawImageOnCanvas(imageSrc, label, type) {
         const { x, y, rotation } = this.getCoordinatesForLabel(label, type);
@@ -272,6 +275,81 @@ export class CanvasManager {
             case 'O3': return { x: 463, y: 213, rotation: 0 };
             case 'O4': return { x: 653, y: 213, rotation: 0 };
             case 'O5': return { x: 825, y: 213, rotation: 0 };
+            //P
+            case 'P1': return { x: 114, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P2': return { x: 149, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P3': return { x: 186 + 1, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P4': return { x: 221 + 1, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P5': return { x: 257 + 2, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P6': return { x: 293 + 2, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P7': return { x: 330 + 3, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P8': return { x: 365 + 3, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P9': return { x: 402 + 4, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P10': return { x: 438 + 4, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P11': return { x: 474 + 5, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P12': return { x: 510 + 5, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P13': return { x: 546 + 6, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P14': return { x: 581 + 6, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P15': return { x: 618 + 7, y: 117, rotation: 150 * Math.PI / 180 };
+            case 'P16': return { x: 653 + 7, y: 117, rotation: 150 * Math.PI / 180 };
+            //Q
+            case 'Q1': return { x: 112, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q2': return { x: 149, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q3': return { x: 186, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q4': return { x: 222, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q5': return { x: 259, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q6': return { x: 295, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q7': return { x: 333, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q8': return { x: 368, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q9': return { x: 406, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q10': return { x: 441, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q11': return { x: 479, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q12': return { x: 513, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q13': return { x: 552, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q14': return { x: 588, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q15': return { x: 626, y: 233, rotation: 30 * Math.PI / 180 };
+            case 'Q16': return { x: 663, y: 233, rotation: 30 * Math.PI / 180 };
+            //R
+            case 'R1': return { x: 42, y: 98, rotation: 150 * Math.PI / 180 };
+            case 'R2': return { x: 79, y: 98, rotation: 150 * Math.PI / 180 };
+            case 'R3': return { x: 115, y: 98, rotation: 150 * Math.PI / 180 };
+            case 'R4': return { x: 153, y: 98, rotation: 150 * Math.PI / 180 };
+            case 'R5': return { x: 189, y: 98, rotation: 150 * Math.PI / 180 }; // 189 - 1 = 188
+            case 'R6': return { x: 226 - 1, y: 98, rotation: 150 * Math.PI / 180 }; // 226 - 1 = 225
+            case 'R7': return { x: 262 - 1, y: 98, rotation: 150 * Math.PI / 180 }; // 263 - 1 = 262
+            case 'R8': return { x: 300 - 1, y: 98, rotation: 150 * Math.PI / 180 }; // 300 - 1 = 299
+            case 'R9': return { x: 337 - 2, y: 98, rotation: 150 * Math.PI / 180 }; // 336 - 2 = 334
+            case 'R10': return { x: 374 - 2, y: 98, rotation: 150 * Math.PI / 180 }; // 373 - 2 = 371
+            case 'R11': return { x: 410 - 2, y: 98, rotation: 150 * Math.PI / 180 }; // 410 - 2 = 408
+            case 'R12': return { x: 446 - 2, y: 98, rotation: 150 * Math.PI / 180 }; // 447 - 2 = 445
+            case 'R13': return { x: 483 - 3, y: 98, rotation: 150 * Math.PI / 180 }; // 483 - 3 = 480
+            case 'R14': return { x: 519 - 3, y: 98, rotation: 150 * Math.PI / 180 }; // 520 - 3 = 517
+            case 'R15': return { x: 557 - 3, y: 98, rotation: 150 * Math.PI / 180 }; // 557 - 3 = 554
+            case 'R16': return { x: 594 - 3, y: 98, rotation: 150 * Math.PI / 180 }; // 594 - 3 = 591
+            //S
+            case 'S1': return { x: 43, y: 214, rotation: 30 * Math.PI / 180 };
+            case 'S2': return { x: 80, y: 214, rotation: 30 * Math.PI / 180 };
+            case 'S3': return { x: 116, y: 214, rotation: 30 * Math.PI / 180 };
+            case 'S4': return { x: 151, y: 214, rotation: 30 * Math.PI / 180 };
+            case 'S5': return { x: 190 - 1, y: 214, rotation: 30 * Math.PI / 180 }; // 190 - 1 = 189
+            case 'S6': return { x: 228 - 1, y: 214, rotation: 30 * Math.PI / 180 }; // 227 - 1 = 226
+            case 'S7': return { x: 265 - 1, y: 214, rotation: 30 * Math.PI / 180 }; // 264 - 1 = 263
+            case 'S8': return { x: 301 - 1, y: 214, rotation: 30 * Math.PI / 180 }; // 301 - 1 = 300
+            case 'S9': return { x: 339 - 2, y: 214, rotation: 30 * Math.PI / 180 }; // 337 - 2 = 335
+            case 'S10': return { x: 376 - 2, y: 214, rotation: 30 * Math.PI / 180 }; // 374 - 2 = 372
+            case 'S11': return { x: 412 - 2, y: 214, rotation: 30 * Math.PI / 180 }; // 411 - 2 = 409
+            case 'S12': return { x: 448 - 2, y: 214, rotation: 30 * Math.PI / 180 }; // 448 - 2 = 446
+            case 'S13': return { x: 484 - 3, y: 214, rotation: 30 * Math.PI / 180 }; // 484 - 3 = 481
+            case 'S14': return { x: 521 - 3, y: 214, rotation: 30 * Math.PI / 180 }; // 521 - 3 = 518
+            case 'S15': return { x: 558 - 3, y: 214, rotation: 30 * Math.PI / 180 }; // 558 - 3 = 555
+            case 'S16': return { x: 594 - 3, y: 214, rotation: 30 * Math.PI / 180 }; // 595 - 3 = 592
+
+
+
+
+
+
+
 
             default: return { x: 10, y: 10, rotation: 0 }; // Default coordinates
         }
@@ -315,6 +393,24 @@ export class CanvasManager {
             case 'O3': return { x: 483, y: 292, rotation: 30 * Math.PI / 180 };
             case 'O4': return { x: 673, y: 292, rotation: 30 * Math.PI / 180 };
             case 'O5': return { x: 845, y: 292, rotation: 30 * Math.PI / 180 };
+            //P
+            case 'P1': return { x: 50, y: 85, rotation: 55 * Math.PI / 180 };
+            case 'P2': return { x: 85, y: 85, rotation: 55 * Math.PI / 180 }; // 50 + 37
+            case 'P3': return { x: 123, y: 85, rotation: 55 * Math.PI / 180 }; // 85 + 37 + 1
+            case 'P4': return { x: 158, y: 85, rotation: 55 * Math.PI / 180 }; // 123 + 35 + 1
+            case 'P5': return { x: 195, y: 85, rotation: 55 * Math.PI / 180 }; // 158 + 37 + 2
+            case 'P6': return { x: 231, y: 85, rotation: 55 * Math.PI / 180 }; // 195 + 36 + 2
+            case 'P7': return { x: 269, y: 85, rotation: 55 * Math.PI / 180 }; // 231 + 38 + 3
+            case 'P8': return { x: 304, y: 85, rotation: 55 * Math.PI / 180 }; // 269 + 35 + 3
+            case 'P9': return { x: 342, y: 85, rotation: 55 * Math.PI / 180 }; // 304 + 38 + 4
+            case 'P10': return { x: 378, y: 85, rotation: 55 * Math.PI / 180 }; // 342 + 36 + 4
+            case 'P11': return { x: 415, y: 85, rotation: 55 * Math.PI / 180 }; // 378 + 37 + 5
+            case 'P12': return { x: 451, y: 85, rotation: 55 * Math.PI / 180 }; // 415 + 36 + 5
+            case 'P13': return { x: 488, y: 85, rotation: 55 * Math.PI / 180 }; // 451 + 37 + 6
+            case 'P14': return { x: 523, y: 85, rotation: 55 * Math.PI / 180 }; // 488 + 35 + 6
+            case 'P15': return { x: 561, y: 85, rotation: 55 * Math.PI / 180 }; // 523 + 38 + 7
+            case 'P16': return { x: 596, y: 85, rotation: 55 * Math.PI / 180 }; // 561 + 35 + 7
+
 
             default: return { x: 10, y: 10, rotation: 0 }; // Default coordinates for tag
         }

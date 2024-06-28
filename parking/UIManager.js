@@ -11,16 +11,15 @@ const apronImages = {
     'K': '../resources/Kilo.png',
     'M': '../resources/Mike.png',
     'O': '../resources/Oscar.png',
-    'P': '../resources/PapaQuebec.png',
-    'Q': '../resources/PapaQuebec.png',
-    'R': '../resources/RomeoSierra.png',
-    'S': '../resources/RomeoSierra.png',
+    'PQ': '../resources/PapaQuebec.png',
+    'RS': '../resources/RomeoSierra.png',
     'SR': '../resources/SouthRamp.png',
-    'T': '../resources/TangoUniformVictor.png',
+    'TUV': '../resources/TangoUniformVictor.png',
     'TR': '../resources/TankerRow.png',
-    'U': '../resources/TangoUniformVictor.png',
-    'V': '../resources/TangoUniformVictor.png',
 };
+
+const singleJetOnlyAprons = ['PQ', 'RS', 'TUV', 'K', 'P', 'Q', 'R', 'S', 'T', 'U', 'V']; // Add the apron IDs that can only hold single jets
+
 
 let canvasManager;  // Declare canvasManager as a global variable
 
@@ -80,14 +79,11 @@ function showChecklist(option) {
             'K': createSpotsList(18, 'K'),
             'M': createSpotsList(12, 'M'),
             'O': createSpotsList(5, 'O'),
-            'P': createSpotsList(16, 'P'),
-            'Q': createSpotsList(16, 'Q'),
-            'R': createSpotsList(16, 'R'),
-            'S': createSpotsList(16, 'S'),
+            'PQ': createSpotsList(16, 'P', 1, 'Q'),
+            'RS': createSpotsList(16, 'R', 1, 'S'),
             'SR': createSpotsList(16, 'SR'),
-            'T': createSpotsList(12, 'T'),
+            'TUV': createSpotsList(12, 'T', 1, 'U', 'V'),
             'TR': createSpotsList(12, 'TR', 11),
-            'U': createSpotsList(12, 'U'),
         };
         const spotsHTML = spotsData[option] || 'No spots available for this selection.';
         const apronImageSrc = apronImages[option] || ''; // Default image if none specified
@@ -115,7 +111,7 @@ function showChecklist(option) {
 
 window.showChecklist = showChecklist;
 
-function createSpotsList(count, apron, start = 1) {
+function createSpotsList(count, apron, start = 1, apron2, apron3) {
     let spots = '';
     for (let i = start; i < start + count; i++) {
         spots += `
@@ -125,8 +121,29 @@ function createSpotsList(count, apron, start = 1) {
             </div>
         `;
     }
+    if (apron2 != null) {
+        for (let i = start; i < start + count; i++) {
+            spots += `
+            <div class="spot">
+                <label for="${apron2 + i}">${apron2 + i}</label>
+                <input type="checkbox" id="${apron2 + i}" class="spotcheck">
+            </div>
+        `;
+        }
+    }
+    if (apron3 != null) {
+        for (let i = 1; i < 9; i++) {
+            spots += `
+            <div class="spot">
+                <label for="${apron3 + i}">${apron3 + i}</label>
+                <input type="checkbox" id="${apron3 + i}" class="spotcheck">
+            </div>
+        `;
+        }
+    }
     return `<style>#${apron}{background-color: #444;}</style>` + spots;
 }
+
 
 function clearAllTiles() {
     console.log('Clearing all tiles');
@@ -323,15 +340,21 @@ function createPlaneButtonPart(label, canvasManager) {
     const btnPart = document.createElement('div');
     btnPart.className = 'plnbtnprt';
 
-    const planeButton = createButton('../resources/plane.png', 'Big', 'plane', label, 'plane', canvasManager);
+    // Always add the single jet button
     const jetButton = createButton('../resources/jet.png', 'Small', 'jet', label, 'jet', canvasManager);
-    const twoJetButton = createButton('../resources/2jet.png', 'Double', 'jet2', label, '2jet', canvasManager);
-
-    btnPart.appendChild(planeButton);
     btnPart.appendChild(jetButton);
-    btnPart.appendChild(twoJetButton);
+
+    // Conditionally add other buttons based on the apron type
+    if (!singleJetOnlyAprons.includes(label.replace(/[0-9]/g, ''))) {
+        const planeButton = createButton('../resources/plane.png', 'Big', 'plane', label, 'plane', canvasManager);
+        const twoJetButton = createButton('../resources/2jet.png', 'Double', 'jet2', label, '2jet', canvasManager);
+        btnPart.appendChild(planeButton);
+        btnPart.appendChild(twoJetButton);
+    }
+
     return btnPart;
 }
+
 
 function createButton(imageSrc, altText, className, label, type, canvasManager) {
     const button = document.createElement('div');

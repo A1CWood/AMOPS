@@ -123,13 +123,19 @@ input.spotcheck:hover {
 
 #pickedContainer {
     display: flex;
-    /* Enables flexbox layout */
     flex-wrap: wrap;
-    /* Allows items to wrap onto multiple lines if needed */
     justify-content: flex-start;
-    /* Aligns items to the start of the flex container */
     align-items: flex-start;
+    /* Align items at the start of the container */
+    align-content: flex-start;
+    /* Align rows at the start of the container */
+    gap: 5px;
+    /* This controls the horizontal and vertical gap between items */
+    margin: 0;
+    padding: 5px;
 }
+
+
 
 .picked {
     display: flex;
@@ -138,11 +144,7 @@ input.spotcheck:hover {
     align-items: center;
     padding: 10px;
     height: fit-content;
-    border-width: 2px;
-    border-right-width: 1px;
-    border-left-width: 1px;
-    border-style: solid;
-    border-color: black;
+    margin: 0;
 }
 
 .pkinput {
@@ -157,12 +159,12 @@ input.spotcheck:hover {
 }
 
 .pkinput label {
-    padding-top: 10px;
-    margin: 5px;
+    display: none;
 }
 
 .picked h1 {
     margin: 0px;
+    margin-bottom: 5px;
 }
 
 .plnbtnprt {
