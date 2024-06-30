@@ -202,6 +202,11 @@ input.spotcheck:hover {
     padding: 4px;
 }
 
+.x {
+    width: 38px;
+    padding: 4px;
+}
+
 .output {
     display: none;
     flex-direction: column;
@@ -308,4 +313,17 @@ input.spotcheck:hover {
 #saveButton h1 {
     margin-left: 10px;
 
+}
+
+.color-selection {
+    display: flex;
+    margin-top: 10px;
+}
+
+.color-square {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    cursor: pointer;
+    border: 1px solid #000;
 }

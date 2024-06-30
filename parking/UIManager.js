@@ -1,5 +1,5 @@
-// UIManager.js
 import { CanvasManager } from './CanvasManager.js';
+import { getCoordinatesForLabel, getCoordinatesForTag, getMirrorStateForLabel } from './coordinates.js';
 
 const apronImages = {
     'A': '../resources/Alpha.png',
@@ -20,8 +20,54 @@ const apronImages = {
 
 const singleJetOnlyAprons = ['PQ', 'RS', 'TUV', 'K', 'P', 'Q', 'R', 'S', 'T', 'U', 'V']; // Add the apron IDs that can only hold single jets
 
-
 let canvasManager;  // Declare canvasManager as a global variable
+
+const canvasState = {
+    currentApron: '',
+    planes: [],
+    addOrUpdatePlane(plane) {
+        const existingPlane = this.planes.find(p => p.id === plane.id);
+        if (existingPlane) {
+            Object.assign(existingPlane, plane);
+        } else {
+            this.planes.push(plane);
+        }
+        this.logState();
+    },
+    updatePlane(planeId, data) {
+        const plane = this.planes.find(p => p.id === planeId);
+        if (plane) {
+            Object.assign(plane, data);
+        }
+        this.logState();
+    },
+    removePlane(planeId) {
+        this.planes = this.planes.filter(plane => plane.id !== planeId);
+        this.logState();
+    },
+    setCurrentApron(apron) {
+        this.currentApron = apron;
+        console.log(`Current apron set to: ${apron}`);
+        this.logState();
+    },
+    clear() {
+        this.planes = [];
+        this.logState();
+    },
+    logState() {
+        console.log("Current canvas state:");
+        this.planes.forEach(plane => {
+            console.log(`ID: ${plane.id}, Spot: ${plane.parkingSpot}, Type: ${plane.planeType}, Color: ${plane.color}, Image Src: ${plane.imageSrc}`);
+        });
+    }
+};
+
+export default canvasState;
+
+
+function updateCanvasStateTag(label, tagData) {
+    canvasState.updatePlane(label, { tagData });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM fully loaded and parsed');
@@ -33,7 +79,8 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Spot checkbox changed');
             handleCheckboxChange(event, canvasManager);
         }
-    });
+    }
+    );
 
     document.getElementById('aircraftDetails').addEventListener('change', function () {
         console.log('Aircraft details checkbox changed');
@@ -61,8 +108,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Apply the initial visibility state based on the checkbox
     toggleHeaderVisibility(canvasManager);
-    // Clear the canvas initially
-    canvasManager.clearCanvas();
 });
 
 // UIManager.js
@@ -103,11 +148,15 @@ function showChecklist(option) {
         console.log('Resetting UI for new checklist');
         clearAllTiles();
         resetSpotCheckboxes();
+
+        // Reset canvas state and set the current apron
+        canvasState.clear();
+        canvasState.setCurrentApron(apronImageSrc);
+        canvasManager.refreshCanvas(canvasState);
     } catch (error) {
         console.error("Failed to show checklist: ", error);
     }
 }
-
 
 window.showChecklist = showChecklist;
 
@@ -143,7 +192,6 @@ function createSpotsList(count, apron, start = 1, apron2, apron3) {
     }
     return `<style>#${apron}{background-color: #444;}</style>` + spots;
 }
-
 
 function clearAllTiles() {
     console.log('Clearing all tiles');
@@ -189,13 +237,10 @@ function handleCheckboxChange(event, canvasManager) {
         createPickedDiv(label, showTag, showDetails, canvasManager);
     } else {
         removePickedDiv(label);
-        canvasManager.removeIconFromCanvas(label);
-        removeAircraftDetailTile(label);
-        canvasManager.clearTagFromCanvas(label);
+        canvasState.removePlane(label);
+        canvasManager.refreshCanvas(canvasState);
     }
 }
-
-
 
 function toggleAircraftDetails() {
     console.log('Toggling aircraft details visibility');
@@ -210,7 +255,6 @@ function toggleAircraftDetails() {
     });
 }
 
-
 function toggleHeaderVisibility(canvasManager) {
     console.log('Toggling header visibility');
     const headerCheckbox = document.getElementById('header');
@@ -224,6 +268,7 @@ function toggleHeaderVisibility(canvasManager) {
         canvasManager.clearHeader();
     }
 }
+
 function saveCanvas(canvasManager) {
     console.log('Saving canvas');
     const outputCanvas = document.createElement('canvas');
@@ -263,8 +308,8 @@ function createPickedDiv(label, showTag, showDetails, canvasManager) {
         inputTag.setAttribute('placeholder', '7 Char Limit');
         inputTag.setAttribute('id', 'tagInput-' + label);
         inputTag.addEventListener('input', function () {
-            const coordinates = canvasManager.getCoordinatesForLabel(label, "plane");
-            canvasManager.drawTagOnCanvas(label, this.value, coordinates);
+            updateCanvasStateTag(label, this.value);
+            canvasManager.refreshCanvas(canvasState);
         });
         pickedDiv.appendChild(createDetailElement('Tag', inputTag));
     }
@@ -286,9 +331,37 @@ function createPickedDiv(label, showTag, showDetails, canvasManager) {
         pickedDiv.appendChild(createDetailElement('ETA', inputETA));
     }
 
-    pickedDiv.appendChild(createPlaneButtonPart(label, canvasManager));
+    pickedDiv.appendChild(createPlaneButtonPart(label, canvasManager, showTag));
+
+    // Add color selection squares
+    const colorDiv = document.createElement('div');
+    colorDiv.className = 'color-selection';
+    const colors = ['black', 'blue', 'green', 'yellow', 'red'];
+    colors.forEach(color => {
+        const colorSquare = document.createElement('div');
+        colorSquare.className = 'color-square';
+        colorSquare.style.backgroundColor = color;
+        colorSquare.addEventListener('click', function () {
+            updateCanvasStateColor(label, color, canvasManager);
+        });
+        colorDiv.appendChild(colorSquare);
+    });
+    pickedDiv.appendChild(colorDiv);
+
     document.getElementById('pickedContainer').appendChild(pickedDiv);
 }
+
+
+// Update canvas state with the selected color
+function updateCanvasStateColor(label, color, canvasManager) {
+    const plane = canvasState.planes.find(p => p.id === label);
+    if (plane) {
+        plane.color = color;
+        plane.imageSrc = `../resources/${plane.planeType}_${color}.png`;
+    }
+    canvasManager.refreshCanvas(canvasState);
+}
+
 
 
 function createAircraftDetailTile(label, callsign, aircraftType, eta) {
@@ -336,18 +409,20 @@ function createDetailElement(labelText, inputElement) {
     return div;
 }
 
-function createPlaneButtonPart(label, canvasManager) {
+function createPlaneButtonPart(label, canvasManager, showTag) {
     const btnPart = document.createElement('div');
     btnPart.className = 'plnbtnprt';
 
     // Always add the single jet button
-    const jetButton = createButton('../resources/jet.png', 'Small', 'jet', label, 'jet', canvasManager);
+    const jetButton = createButton('../resources/jet_black.png', 'Small', 'jet', label, 'jet', canvasManager, showTag);
     btnPart.appendChild(jetButton);
+    const xButton = createButton('../resources/x_black.png', 'Closed', 'x', label, 'x', canvasManager, showTag);
+    btnPart.appendChild(xButton);
 
     // Conditionally add other buttons based on the apron type
     if (!singleJetOnlyAprons.includes(label.replace(/[0-9]/g, ''))) {
-        const planeButton = createButton('../resources/plane.png', 'Big', 'plane', label, 'plane', canvasManager);
-        const twoJetButton = createButton('../resources/2jet.png', 'Double', 'jet2', label, '2jet', canvasManager);
+        const planeButton = createButton('../resources/plane_black.png', 'Big', 'plane', label, 'plane', canvasManager, showTag);
+        const twoJetButton = createButton('../resources/2jet_black.png', 'Double', 'jet2', label, '2jet', canvasManager, showTag);
         btnPart.appendChild(planeButton);
         btnPart.appendChild(twoJetButton);
     }
@@ -355,8 +430,7 @@ function createPlaneButtonPart(label, canvasManager) {
     return btnPart;
 }
 
-
-function createButton(imageSrc, altText, className, label, type, canvasManager) {
+function createButton(imageSrc, altText, className, label, type, canvasManager, showTag) {
     const button = document.createElement('div');
     button.className = 'planebtn';
     const image = document.createElement('img');
@@ -366,10 +440,22 @@ function createButton(imageSrc, altText, className, label, type, canvasManager) 
     button.appendChild(image);
     button.addEventListener('click', function () {
         console.log(`Button clicked to draw ${type} image for label: ${label}`);
-        canvasManager.drawImageOnCanvas(imageSrc, label, type);
+        const defaultColor = 'black'; // Default color
+        canvasState.addOrUpdatePlane({
+            id: label,
+            parkingSpot: label,
+            planeType: type,
+            color: defaultColor, // Default color
+            imageSrc: `../resources/${type}_${defaultColor}.png`, // Default image source
+            showTag: showTag,
+            tagData: showTag ? document.getElementById('tagInput-' + label).value : ''
+        });
+        canvasManager.refreshCanvas(canvasState);
     });
     return button;
 }
+
+
 
 function removePickedDiv(label) {
     console.log(`Removing picked div for label: ${label}`);
@@ -377,19 +463,5 @@ function removePickedDiv(label) {
     if (pickedDiv) {
         pickedDiv.remove();
     }
-}
-
-function removeAircraftDetailTile(label) {
-    console.log(`Removing aircraft detail tile for label: ${label}`);
-    const tile = document.getElementById('tile-' + label);
-    if (tile) {
-        tile.remove();
-    }
-}
-
-function clearTagFromCanvas(label, canvasManager) {
-    console.log(`Clearing tag from canvas for label: ${label}`);
-    const coordinates = canvasManager.getCoordinatesForLabel(label, "plane");
-    canvasManager.drawTagOnCanvas(label, '', coordinates);
 }
 
