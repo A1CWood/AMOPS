@@ -291,29 +291,28 @@ input.spotcheck:hover {
 #saveButton {
     display: flex;
     flex-direction: row;
-    font-family: roboto;
-    position: absolute;
-    right: 100px;
-    top: 75%;
-    transform: translateY(-50%);
+    font-family: Roboto, sans-serif;
     background: #98faad;
-    /* Light grey background, adjust as needed */
     border: none;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 10px;
+    /* Space between the button and the canvas */
+    align-self: center;
+    /* Center the button within the parent container */
 }
 
 #saveButton img {
     width: 50px;
-    /* Adjust size as needed */
     height: auto;
 }
 
 #saveButton h1 {
     margin-left: 10px;
-
 }
+
+
 
 .color-selection {
     display: flex;

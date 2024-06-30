@@ -37,73 +37,74 @@ export function getCoordinatesForLabel(label, type) {
         case 'O4': return { x: 653, y: 213, rotation: 0 };
         case 'O5': return { x: 825, y: 213, rotation: 0 };
         // P
-        case 'P1': return { x: 114, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P2': return { x: 149, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P3': return { x: 186 + 1, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P4': return { x: 221 + 1, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P5': return { x: 257 + 2, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P6': return { x: 293 + 2, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P7': return { x: 330 + 3, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P8': return { x: 365 + 3, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P9': return { x: 402 + 4, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P10': return { x: 438 + 4, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P11': return { x: 474 + 5, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P12': return { x: 510 + 5, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P13': return { x: 546 + 6, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P14': return { x: 581 + 6, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P15': return { x: 618 + 7, y: 117, rotation: 150 * Math.PI / 180 };
-        case 'P16': return { x: 653 + 7, y: 117, rotation: 150 * Math.PI / 180 };
+        case 'P1': return { x: 114, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P2': return { x: 149, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P3': return { x: 186 + 1, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P4': return { x: 221 + 1, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P5': return { x: 257 + 2, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P6': return { x: 293 + 2, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P7': return { x: 330 + 3, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P8': return { x: 365 + 3, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P9': return { x: 402 + 4, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P10': return { x: 438 + 4, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P11': return { x: 474 + 5, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P12': return { x: 510 + 5, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P13': return { x: 546 + 6, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P14': return { x: 581 + 6, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P15': return { x: 618 + 7, y: 136, rotation: 150 * Math.PI / 180 };
+        case 'P16': return { x: 653 + 7, y: 136, rotation: 150 * Math.PI / 180 };
         // Q
-        case 'Q1': return { x: 112, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q2': return { x: 149, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q3': return { x: 186, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q4': return { x: 222, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q5': return { x: 259, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q6': return { x: 295, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q7': return { x: 333, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q8': return { x: 368, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q9': return { x: 406, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q10': return { x: 441, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q11': return { x: 479, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q12': return { x: 513, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q13': return { x: 552, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q14': return { x: 588, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q15': return { x: 626, y: 233, rotation: 30 * Math.PI / 180 };
-        case 'Q16': return { x: 663, y: 233, rotation: 30 * Math.PI / 180 };
+        case 'Q1': return { x: 112, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q2': return { x: 149, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q3': return { x: 186, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q4': return { x: 222, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q5': return { x: 259, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q6': return { x: 295, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q7': return { x: 333, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q8': return { x: 368, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q9': return { x: 406, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q10': return { x: 441, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q11': return { x: 479, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q12': return { x: 513, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q13': return { x: 552, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q14': return { x: 588, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q15': return { x: 626, y: 252, rotation: 30 * Math.PI / 180 };
+        case 'Q16': return { x: 663, y: 252, rotation: 30 * Math.PI / 180 };
         // R
-        case 'R1': return { x: 42, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R2': return { x: 79, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R3': return { x: 115, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R4': return { x: 153, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R5': return { x: 189, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R6': return { x: 226, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R7': return { x: 262, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R8': return { x: 300, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R9': return { x: 337, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R10': return { x: 374, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R11': return { x: 410, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R12': return { x: 446, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R13': return { x: 483, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R14': return { x: 519, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R15': return { x: 557, y: 98, rotation: 150 * Math.PI / 180 };
-        case 'R16': return { x: 594, y: 98, rotation: 150 * Math.PI / 180 };
+        case 'R1': return { x: 50, y: 142, rotation: 150 * Math.PI / 180 };
+        case 'R2': return { x: 87, y: 142, rotation: 150 * Math.PI / 180 }; // R2
+        case 'R3': return { x: 123, y: 142, rotation: 150 * Math.PI / 180 }; // R3
+        case 'R4': return { x: 161, y: 142, rotation: 150 * Math.PI / 180 }; // R4
+        case 'R5': return { x: 197, y: 142, rotation: 150 * Math.PI / 180 }; // R5
+        case 'R6': return { x: 234, y: 142, rotation: 150 * Math.PI / 180 }; // R6
+        case 'R7': return { x: 270, y: 142, rotation: 150 * Math.PI / 180 }; // R7
+        case 'R8': return { x: 308, y: 142, rotation: 150 * Math.PI / 180 }; // R8
+        case 'R9': return { x: 345, y: 142, rotation: 150 * Math.PI / 180 }; // R9
+        case 'R10': return { x: 382, y: 142, rotation: 150 * Math.PI / 180 }; // R10
+        case 'R11': return { x: 418, y: 142, rotation: 150 * Math.PI / 180 }; // R11
+        case 'R12': return { x: 453, y: 142, rotation: 150 * Math.PI / 180 }; // R12
+        case 'R13': return { x: 489, y: 142, rotation: 150 * Math.PI / 180 }; // R13
+        case 'R14': return { x: 525, y: 142, rotation: 150 * Math.PI / 180 }; // R14
+        case 'R15': return { x: 563, y: 142, rotation: 150 * Math.PI / 180 }; // R15
+        case 'R16': return { x: 601, y: 142, rotation: 150 * Math.PI / 180 }; // R16
         // S
-        case 'S1': return { x: 43, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S2': return { x: 80, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S3': return { x: 116, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S4': return { x: 151, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S5': return { x: 190 - 1, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S6': return { x: 228 - 1, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S7': return { x: 265 - 1, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S8': return { x: 301 - 1, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S9': return { x: 339 - 2, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S10': return { x: 376 - 2, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S11': return { x: 412 - 2, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S12': return { x: 448 - 2, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S13': return { x: 484 - 3, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S14': return { x: 521 - 3, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S15': return { x: 558 - 3, y: 214, rotation: 30 * Math.PI / 180 };
-        case 'S16': return { x: 594 - 3, y: 214, rotation: 30 * Math.PI / 180 };
+        case 'S1': return { x: 51, y: 258, rotation: 30 * Math.PI / 180 }; // S1
+        case 'S2': return { x: 88, y: 258, rotation: 30 * Math.PI / 180 }; // S2
+        case 'S3': return { x: 124, y: 258, rotation: 30 * Math.PI / 180 }; // S3
+        case 'S4': return { x: 159, y: 258, rotation: 30 * Math.PI / 180 }; // S4
+        case 'S5': return { x: 197, y: 258, rotation: 30 * Math.PI / 180 }; // S5
+        case 'S6': return { x: 235, y: 258, rotation: 30 * Math.PI / 180 }; // S6
+        case 'S7': return { x: 272, y: 258, rotation: 30 * Math.PI / 180 }; // S7
+        case 'S8': return { x: 308, y: 258, rotation: 30 * Math.PI / 180 }; // S8
+        case 'S9': return { x: 346, y: 258, rotation: 30 * Math.PI / 180 }; // S9
+        case 'S10': return { x: 383, y: 258, rotation: 30 * Math.PI / 180 }; // S10
+        case 'S11': return { x: 419, y: 258, rotation: 30 * Math.PI / 180 }; // S11
+        case 'S12': return { x: 454, y: 258, rotation: 30 * Math.PI / 180 }; // S12
+        case 'S13': return { x: 492, y: 258, rotation: 30 * Math.PI / 180 }; // S13
+        case 'S14': return { x: 529, y: 258, rotation: 30 * Math.PI / 180 }; // S14
+        case 'S15': return { x: 563, y: 258, rotation: 30 * Math.PI / 180 }; // S15
+        case 'S16': return { x: 599, y: 258, rotation: 30 * Math.PI / 180 }; // S16
+
         default: return { x: 10, y: 10, rotation: 0 }; // Default coordinates
     }
 }
@@ -147,22 +148,74 @@ export function getCoordinatesForTag(label) {
         case 'O4': return { x: 673, y: 292, rotation: 30 * Math.PI / 180 };
         case 'O5': return { x: 845, y: 292, rotation: 30 * Math.PI / 180 };
         // P
-        case 'P1': return { x: 50, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P2': return { x: 85, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P3': return { x: 123, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P4': return { x: 158, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P5': return { x: 195, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P6': return { x: 231, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P7': return { x: 269, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P8': return { x: 304, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P9': return { x: 342, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P10': return { x: 378, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P11': return { x: 415, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P12': return { x: 451, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P13': return { x: 488, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P14': return { x: 523, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P15': return { x: 561, y: 85, rotation: 55 * Math.PI / 180 };
-        case 'P16': return { x: 596, y: 85, rotation: 55 * Math.PI / 180 };
+        case 'P1': return { x: 60, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P2': return { x: 95, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P3': return { x: 133, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P4': return { x: 168, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P5': return { x: 205, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P6': return { x: 241, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P7': return { x: 279, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P8': return { x: 314, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P9': return { x: 352, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P10': return { x: 388, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P11': return { x: 425, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P12': return { x: 461, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P13': return { x: 498, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P14': return { x: 533, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P15': return { x: 571, y: 102, rotation: 60 * Math.PI / 180 };
+        case 'P16': return { x: 606, y: 102, rotation: 60 * Math.PI / 180 };
+        //Q
+        case 'Q1': return { x: 58, y: 325, rotation: -60 * Math.PI / 180 };
+        case 'Q2': return { x: 95, y: 325, rotation: -60 * Math.PI / 180 }; // Q2
+        case 'Q3': return { x: 132, y: 325, rotation: -60 * Math.PI / 180 }; // Q3
+        case 'Q4': return { x: 168, y: 325, rotation: -60 * Math.PI / 180 }; // Q4
+        case 'Q5': return { x: 205, y: 325, rotation: -60 * Math.PI / 180 }; // Q5
+        case 'Q6': return { x: 241, y: 325, rotation: -60 * Math.PI / 180 }; // Q6
+        case 'Q7': return { x: 279, y: 325, rotation: -60 * Math.PI / 180 }; // Q7
+        case 'Q8': return { x: 314, y: 325, rotation: -60 * Math.PI / 180 }; // Q8
+        case 'Q9': return { x: 352, y: 325, rotation: -60 * Math.PI / 180 }; // Q9
+        case 'Q10': return { x: 387, y: 325, rotation: -60 * Math.PI / 180 }; // Q10
+        case 'Q11': return { x: 425, y: 325, rotation: -60 * Math.PI / 180 }; // Q11
+        case 'Q12': return { x: 459, y: 325, rotation: -60 * Math.PI / 180 }; // Q12
+        case 'Q13': return { x: 498, y: 325, rotation: -60 * Math.PI / 180 }; // Q13
+        case 'Q14': return { x: 534, y: 325, rotation: -60 * Math.PI / 180 }; // Q14
+        case 'Q15': return { x: 572, y: 325, rotation: -60 * Math.PI / 180 }; // Q15
+        case 'Q16': return { x: 609, y: 325, rotation: -60 * Math.PI / 180 }; // Q16
+        //R
+        case 'R1': return { x: -4, y: 107, rotation: 60 * Math.PI / 180 }; // R1
+        case 'R2': return { x: 33, y: 107, rotation: 60 * Math.PI / 180 }; // R2
+        case 'R3': return { x: 69, y: 107, rotation: 60 * Math.PI / 180 }; // R3
+        case 'R4': return { x: 107, y: 107, rotation: 60 * Math.PI / 180 }; // R4
+        case 'R5': return { x: 143, y: 107, rotation: 60 * Math.PI / 180 }; // R5
+        case 'R6': return { x: 180, y: 107, rotation: 60 * Math.PI / 180 }; // R6
+        case 'R7': return { x: 216, y: 107, rotation: 60 * Math.PI / 180 }; // R7
+        case 'R8': return { x: 254, y: 107, rotation: 60 * Math.PI / 180 }; // R8
+        case 'R9': return { x: 291, y: 107, rotation: 60 * Math.PI / 180 }; // R9
+        case 'R10': return { x: 328, y: 107, rotation: 60 * Math.PI / 180 }; // R10
+        case 'R11': return { x: 364, y: 107, rotation: 60 * Math.PI / 180 }; // R11
+        case 'R12': return { x: 398, y: 107, rotation: 60 * Math.PI / 180 }; // R12
+        case 'R13': return { x: 435, y: 107, rotation: 60 * Math.PI / 180 }; // R13
+        case 'R14': return { x: 471, y: 107, rotation: 60 * Math.PI / 180 }; // R14
+        case 'R15': return { x: 509, y: 107, rotation: 60 * Math.PI / 180 }; // R15
+        case 'R16': return { x: 546, y: 107, rotation: 60 * Math.PI / 180 }; // R16
+        //S
+        case 'S1': return { x: -3, y: 333, rotation: -60 * Math.PI / 180 }; // S1
+        case 'S2': return { x: 34, y: 333, rotation: -60 * Math.PI / 180 }; // S2
+        case 'S3': return { x: 70, y: 333, rotation: -60 * Math.PI / 180 }; // S3
+        case 'S4': return { x: 105, y: 333, rotation: -60 * Math.PI / 180 }; // S4
+        case 'S5': return { x: 143, y: 333, rotation: -60 * Math.PI / 180 }; // S5
+        case 'S6': return { x: 181, y: 333, rotation: -60 * Math.PI / 180 }; // S6
+        case 'S7': return { x: 218, y: 333, rotation: -60 * Math.PI / 180 }; // S7
+        case 'S8': return { x: 254, y: 333, rotation: -60 * Math.PI / 180 }; // S8
+        case 'S9': return { x: 292, y: 333, rotation: -60 * Math.PI / 180 }; // S9
+        case 'S10': return { x: 329, y: 333, rotation: -60 * Math.PI / 180 }; // S10
+        case 'S11': return { x: 365, y: 333, rotation: -60 * Math.PI / 180 }; // S11
+        case 'S12': return { x: 400, y: 333, rotation: -60 * Math.PI / 180 }; // S12
+        case 'S13': return { x: 438, y: 333, rotation: -60 * Math.PI / 180 }; // S13
+        case 'S14': return { x: 475, y: 333, rotation: -60 * Math.PI / 180 }; // S14
+        case 'S15': return { x: 509, y: 333, rotation: -60 * Math.PI / 180 }; // S15
+        case 'S16': return { x: 545, y: 333, rotation: -60 * Math.PI / 180 };
+
         default: return { x: 10, y: 10, rotation: 0 }; // Default coordinates for tag
     }
 }
