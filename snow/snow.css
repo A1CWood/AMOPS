@@ -21,6 +21,9 @@ main {
     flex-direction: column;
 }
 
+
+/* ============= ONE HZ =============== */
+
 #onehz {
     display: flex;
     justify-content: space-between;
@@ -86,6 +89,9 @@ h3 {
     width: 100px;
 }
 
+
+/* ============= TWO HZ =============== */
+
 #twohz {
     display: flex;
     margin-top: 10px;
@@ -119,6 +125,11 @@ h3 {
     margin-right: 10px;
 }
 
+#wxwatch {
+    height: 60px;
+}
+
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -130,15 +141,25 @@ td {
     text-align: left;
 }
 
+td {
+    vertical-align: middle;
+    padding: 0px;
+    margin: 0px;
+}
+
 
 td>input[type="text"] {
     width: 100%;
     border: none;
+    padding: 0px;
+    padding-left: 3px;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
-td {
-    vertical-align: middle;
+input[type="text"]:focus {
+    z-index: 10;
 }
 
 .twohzlabel {
@@ -147,19 +168,16 @@ td {
     font-weight: bold;
     font-size: 10px;
     width: 60px;
+    padding-right: 1px;
 }
 
 #weather .twohzlabel {
     width: 100px;
 }
 
-#weather td {
-    padding: 0px;
-    margin: 0px;
-}
-
-#weather td:first-child {
-    padding: 1px;
+#other .twohzlabel {
+    width: 20px;
+    text-align: center;
 }
 
 .wxinsidetable td {
@@ -179,6 +197,12 @@ td {
     width: 20px;
 }
 
+#alert {
+    width: 180px;
+    margin-bottom: 10px;
+}
+
+
 #priobox {
     border: 1px solid;
     border-color: black;
@@ -194,11 +218,117 @@ td {
     /* Indentation for the numbered list */
 }
 
+#prioOL {
+    margin-top: 3px;
+    margin-bottom: 1px;
+}
+
 #priobox ol ol {
     margin-left: 0px;
     padding-left: 15px;
 }
 
 #priobox p {
+    margin-top: 0px;
+    margin-bottom: 0px;
     margin-left: 10px;
+}
+
+#alertSpotKey {
+    overflow: visible;
+}
+
+#spotoutline {
+    margin-right: -130px;
+    width: 277px;
+    border: 1px solid black;
+    padding: 3px;
+}
+
+#spotoutlineright {
+    margin-top: 27px;
+}
+
+#spotoutline ul,
+#spotoutlineright ul {
+    font-size: 10px;
+    padding-left: 0px;
+    margin: 0px;
+}
+
+/* ============= THREE HZ =============== */
+
+#threehz {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    font-size: 15px;
+    margin: 0px;
+    padding: 0px;
+    margin-top: 10px;
+}
+
+#dynamicTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Additional styling for table */
+#dynamicTable td {
+    padding: 0px;
+    text-align: left;
+    font-size: 10px;
+}
+
+#dynamicTable th {
+    text-align: center;
+    background-color: lightgrey;
+    font-size: 10px;
+}
+
+#dynamicTable td input {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    position: relative;
+    z-index: 1;
+}
+
+#dynamicTable td input:focus {
+    z-index: 10;
+}
+
+/* Set specific widths for each column */
+#dynamicTable th:nth-child(1),
+#dynamicTable td:nth-child(1) {
+    width: 5%;
+    /* First column width */
+}
+
+#dynamicTable th:nth-child(2),
+#dynamicTable td:nth-child(2) {
+    width: 5%;
+    text-align: center;
+    /* Second column width */
+}
+
+#dynamicTable th:nth-child(3),
+#dynamicTable td:nth-child(3) {
+    max-width: 10%;
+    /* Third column width */
+}
+
+#dynamicTable th:nth-child(4),
+#dynamicTable td:nth-child(4) {
+    width: 5%;
+    /* Fourth column width */
+}
+
+#dynamicTable th:nth-child(5),
+#dynamicTable td:nth-child(5) {
+    width: 75%;
+    /* Fifth column width */
 }

@@ -103,7 +103,7 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="wxwatch">
                                     <td class="twohzlabel">Weather Watches, Warnings, and Advisories:</td>
                                     <td><input type="text" name="input1"></td>
                                 </tr>
@@ -113,33 +113,44 @@
                                 </tr>
                             </table>
                         </div>
-                        <div id="alert">
-                            <h3>ALERT PARKING:</h3>
-                            <table>
-                                <tr>
-                                    <td class="twohzlabel">168th:</td>
-                                    <td><input type="text" name="input1"></td>
-                                </tr>
-                                <tr>
-                                    <td class="twohzlabel">18th:</td>
-                                    <td><input type="text" name="input1"></td>
-                                </tr>
-                                <tr>
-                                    <td class="twohzlabel">210th:</td>
-                                    <td><input type="text" name="input1"></td>
-                                </tr>
-                                <tr>
-                                    <td class="twohzlabel">Transient:</td>
-                                    <td><input type="text" name="input1"></td>
-                                </tr>
-                            </table>
+                        <div id="alertSpotKey">
+                            <div id="alert">
+                                <h3>ALERT PARKING:</h3>
+                                <table>
+                                    <tr>
+                                        <td class="twohzlabel">168th:</td>
+                                        <td><input type="text" name="input1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="twohzlabel">18th:</td>
+                                        <td><input type="text" name="input1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="twohzlabel">210th:</td>
+                                        <td><input type="text" name="input1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="twohzlabel">Transient:</td>
+                                        <td><input type="text" name="input1"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="pspotkey">
+                                <h3>PARKING SPOT KEY:</h3>
+                                <div id="spotoutline">
+                                    <ul>FD = Fox Dens (North Bays)</ul>
+                                    <ul>TR = Tanker Row</ul>
+                                    <ul>C = 4/8 Bays</ul>
+                                    <ul>WS = Weather Shelter (Demons 1-16, Falcons 17-32)</ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div id="twohzrightcluster">
                     <h3>OG PRIORITIES:</h3>
                     <div id="priobox">
-                        <ol>
+                        <ol id="prioOL">
                             <li>Alert Fighter</li>
                             <li>Alert Tanker</li>
                             <li>ATO Tasked Missions</li>
@@ -157,10 +168,47 @@
                         </ol>
                         <p>CAO: 1 OCT 23</p>
                     </div>
+                    <div id="spotoutlineright">
+                        <ul>F1-4 = Bldg 1358</ul>
+                        <ul>LM1-4 = Bldg 1361</ul>
+                    </div>
                 </div>
+            </div>
+            <div id="threehz">
+                <h2>FLYING MISSIONS</h2>
+                <table id="dynamicTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>ARR/DEP</th>
+                            <th>Squadron</th>
+                            <th>Priority</th>
+                            <th>Parking Spots</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <h2>OTHER SNOW REMOVAL (ORDER OF IMPORTANCE)</h2>
+                <table id="other">
+                    <tr>
+                        <td class="twohzlabel">1.</td>
+                        <td><input type="text" name="input4"></td>
+                    </tr>
+                    <tr>
+                        <td class="twohzlabel">2.</td>
+                        <td><input type="text" name="input4"></td>
+                    </tr>
+                    <tr>
+                        <td class="twohzlabel">3.</td>
+                        <td><input type="text" name="input4"></td>
+                    </tr>
+                </table>
             </div>
         </div>
     </main>
+    <button id="generatePDF">Generate PDF</button>
+
     <script src="./snow.js"></script>
 </body>
 
