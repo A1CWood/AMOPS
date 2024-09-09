@@ -332,3 +332,20 @@ h2 {
     width: 75%;
     /* Fifth column width */
 }
+
+.custom-dropdown {
+    background-color: lightgray;
+    position: absolute;
+    color: black;
+    outline: 1px solid black;
+}
+
+.spot-text {
+    display: inline-block;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin: 0px;
+    font-size: 10px;
+}
