@@ -120,7 +120,7 @@ function showChecklist(option) {
             'DV': createSpotsList(3, 'DV'),
             'E': createSpotsList(10, 'E'),
             'NG': createSpotsList(14, 'NG'),
-            'SG': createSpotsList(26, 'SG'),
+            'SG': createSpotsList(27, 'SG'),
             'K': createSpotsList(18, 'K'),
             'M': createSpotsList(12, 'M'),
             'O': createSpotsList(5, 'O'),

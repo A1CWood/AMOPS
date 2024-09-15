@@ -220,8 +220,8 @@ input.spotcheck:hover {
     margin-bottom: 50px;
 }
 
-.apronimg {
-    background-size: 100% 100%;
+#apronimg {
+    max-width: 80vw;
 }
 
 .aircraft-tile {

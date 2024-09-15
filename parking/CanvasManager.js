@@ -104,14 +104,12 @@ export class CanvasManager {
     }
 
     drawTagOnCanvas(label, text) {
-        const { x, y, rotation } = getCoordinatesForTag(label);
+        const { x, y, rotation, width, height } = getCoordinatesForTag(label);
         const mirror = getMirrorStateForLabel(label, "tag");
 
         console.log(`Drawing tag on canvas for label: ${label} with text: ${text} and mirror: ${mirror}`);
 
-        const tagWidth = 100;
-        const tagHeight = 15;
-        const textOffset = mirror ? tagWidth * 0.2 : 3; // Offset for mirrored text
+        const textOffset = mirror ? width * 0.2 : 3; // Offset for mirrored text
 
         if (text.trim() === '') {
             return;
@@ -119,44 +117,44 @@ export class CanvasManager {
 
         this.loadImage('../resources/tag.png', (tagImg) => {
             this.ctx.save();
-            this.ctx.translate(x + tagWidth / 2, y + tagHeight / 2); // Center of the tag
+            this.ctx.translate(x + width / 2, y + height / 2); // Center of the tag
             this.ctx.rotate(rotation);
             if (mirror) {
                 this.ctx.scale(-1, 1);
             }
-            this.ctx.translate(-tagWidth / 2, -tagHeight / 2); // Back to the top-left of the tag
-            this.ctx.drawImage(tagImg, 0, 0, tagWidth, tagHeight);
+            this.ctx.translate(-width / 2, -height / 2); // Back to the top-left of the tag
+            this.ctx.drawImage(tagImg, 0, 0, width, height);
 
             // Reset the mirroring for text
             if (mirror) {
-                this.ctx.translate(tagWidth / 2, tagHeight / 2);
+                this.ctx.translate(width / 2, height / 2);
                 this.ctx.scale(-1, 1);
-                this.ctx.translate(-tagWidth / 2, -tagHeight / 2);
+                this.ctx.translate(-width / 2, -height / 2);
             }
-
-            this.ctx.font = 'bold 12px Arial';
+            const fontSize = height * 0.9;
+            this.ctx.font = `bold ${fontSize}px Arial`;
             this.ctx.fillStyle = 'black';
             this.ctx.textAlign = 'left';
-            this.ctx.fillText(text, textOffset, 12);
+            this.ctx.fillText(text, textOffset, height * 0.85);
             this.ctx.restore();
         });
     }
 
 
     drawImageOnCanvas(imageSrc, label, type) {
-        const { x, y, rotation } = getCoordinatesForLabel(label, type);
+        const { x, y, rotation, width, height } = getCoordinatesForLabel(label, type);
         const mirror = getMirrorStateForLabel(label, type);
 
         console.log(`Drawing image on canvas for label: ${label} with imageSrc: ${imageSrc} and type: ${type}`);
 
         this.loadImage(imageSrc, (img) => {
             this.ctx.save();
-            this.ctx.translate(x + this.IMAGE_WIDTH / 2, y + this.IMAGE_HEIGHT / 2);
+            this.ctx.translate(x + width / 2, y + height / 2);
             this.ctx.rotate(rotation);
             if (mirror) {
                 this.ctx.scale(-1, 1);
             }
-            this.ctx.drawImage(img, -this.IMAGE_WIDTH / 2, -this.IMAGE_HEIGHT / 2, this.IMAGE_WIDTH, this.IMAGE_HEIGHT);
+            this.ctx.drawImage(img, -width / 2, -height / 2, width, height);
             this.ctx.restore();
         });
     }
