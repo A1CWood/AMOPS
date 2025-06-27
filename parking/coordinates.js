@@ -111,7 +111,6 @@ export function getCoordinatesForLabel(label, type, width = 54, height = 55) {
         case 'SG24': return { x: 980, y: 517, rotation: -34 * Math.PI / 180, width: 100, height: 102 };
         case 'SG23': return { x: 1208, y: 517, rotation: -34 * Math.PI / 180, width: 100, height: 102 };
         // SG Spots (South Golf)
-        // SG Spots (South Golf)
         case 'SG1': return { x: 3419, y: 508, rotation: -45 * Math.PI / 180, width: 100, height: 102 };
         case 'SG2': return { x: 3325.2, y: 508, rotation: -45 * Math.PI / 180, width: 100, height: 102 };
         case 'SG3': return { x: 3231.4, y: 508, rotation: -45 * Math.PI / 180, width: 100, height: 102 };
@@ -134,6 +133,22 @@ export function getCoordinatesForLabel(label, type, width = 54, height = 55) {
         case 'SG20': return { x: 1629, y: 508, rotation: -45 * Math.PI / 180, width: 100, height: 102 };
         case 'SG21': return { x: 1539, y: 508, rotation: -45 * Math.PI / 180, width: 100, height: 102 };
         case 'SG22': return { x: 1449, y: 508, rotation: -45 * Math.PI / 180, width: 100, height: 102 };
+        // North golf
+        case 'NG1': return { x: 3164, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG2': return { x: 2942, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG3': return { x: 2720, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG4': return { x: 2498, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG5': return { x: 2276, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG6': return { x: 2054, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG7': return { x: 1832, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG8': return { x: 1610, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG9': return { x: 1388, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG10': return { x: 1166, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG11': return { x: 944, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG12': return { x: 722, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG13': return { x: 500, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+        case 'NG14': return { x: 278, y: 508, rotation: 145 * Math.PI / 180, width: 100, height: 102 };
+
 
 
 
