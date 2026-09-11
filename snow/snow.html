@@ -106,7 +106,7 @@
                                 </tr>
                                 <tr id="wxwatch">
                                     <td class="twohzlabel">Weather Watches, Warnings, and Advisories:</td>
-                                    <td><input type="text" name="input1"></td>
+                                    <td><textarea id="weatherAdvisories" name="input1" rows="4" aria-label="Weather watches, warnings, and advisories"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td class="twohzlabel">Other Weather:</td>
@@ -210,7 +210,7 @@
     </main>
     <div class="snow-tools">
         <p>Enter local times as HHMM or HH:MM. Flights sort when you leave a row; a blank row is added as you type.</p>
-        <p>Flying windows create DEP/ARR pairs when you leave the field. Editing or clearing a window updates its generated flights.</p>
+        <p>Flying windows create DEP/ARR pairs when you leave the field. Enter NONE for no flying. Editing, clearing, or entering NONE updates that unit's generated flights.</p>
         <p>Click ARR to switch to DEP. Parking edits on a priority 4 flight copy to that squadron's other flights when you leave the parking entry.</p>
         <p>Squadron and priorities 4a–7 fill each other in. Priorities 1–3 can be assigned manually.</p>
         <button id="generatePDF" type="button">Save as PDF / Print</button>

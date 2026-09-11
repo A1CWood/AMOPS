@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.after(picker);
         });
         const remove = document.createElement('button');
-        remove.type = 'button'; remove.textContent = 'Ã—'; remove.setAttribute('aria-label', 'Remove flight');
+        remove.type = 'button'; remove.textContent = 'X'; remove.setAttribute('aria-label', 'Remove flight');
         remove.addEventListener('click', () => { closeParking(); row.remove(); ensureBlank(); });
         actions.append(parking, remove); row.cells[4].append(actions);
         return row;
@@ -215,18 +215,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const windowInputs = [...document.querySelectorAll('#local input')];
     const hhmm = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0')}${String(minutes % 60).padStart(2, '0')}`;
     function syncWindows(input) {
-        if (input.dataset.lastWindows === input.value.trim()) return;
+        if (input.dataset.lastWindows === input.value.trim() && input.checkValidity()) return;
         const unit = input.dataset.unit;
-        const text = input.value.trim();
+        const text = input.value.trim().toUpperCase();
+        if (text === 'NONE') input.value = text;
         const windows = [];
-        for (const part of text ? text.split(/[,;]/) : []) {
+        for (const part of text && text !== 'NONE' ? text.split(/[,;]/) : []) {
             const pair = part.trim().split(/\s*[-–—]\s*/);
             const start = pair.length === 2 ? parseTime(pair[0]) : null;
             const end = pair.length === 2 ? parseTime(pair[1]) : null;
             if (start === null || end === null || start >= end) {
-                input.setCustomValidity('Use same-day windows such as 0830-1000, 1200-1330, with departure before arrival.');
+                input.setCustomValidity('Enter NONE or same-day windows such as 0830-1000, 1200-1330, with departure before arrival.');
                 input.setAttribute('aria-invalid', 'true');
-                status.textContent = `${unit}: enter windows like 0830-1000, 1200-1330. Existing flights are kept until the entry is valid.`;
+                status.textContent = `${unit}: enter NONE or windows like 0830-1000, 1200-1330. Existing flights are kept until the entry is valid.`;
                 return;
             }
             windows.push([start, end]);
@@ -253,9 +254,18 @@ document.addEventListener('DOMContentLoaded', () => {
     windowInputs.forEach((input, index) => {
         input.dataset.unit = windowUnits[index]; input.dataset.lastWindows = '';
         input.setAttribute('aria-label', `${windowUnits[index]} flying windows`);
-        input.title = 'Local departure-arrival windows, e.g. 0830-1000, 1200-1330';
+        input.title = 'Enter NONE for no flying, or local departure-arrival windows, e.g. 0830-1000, 1200-1330';
         input.addEventListener('blur', () => syncWindows(input));
     });
+
+    const weatherAdvisories = document.getElementById('weatherAdvisories');
+    function resizeWeatherAdvisories() {
+        weatherAdvisories.style.height = 'auto';
+        weatherAdvisories.style.height = `${Math.max(60, weatherAdvisories.scrollHeight)}px`;
+    }
+    weatherAdvisories.addEventListener('input', resizeWeatherAdvisories);
+    window.addEventListener('resize', resizeWeatherAdvisories);
+    resizeWeatherAdvisories();
 
     function preparePrint() {
         windowInputs.forEach(syncWindows);
@@ -263,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sortRows();
         document.querySelectorAll('.print-value').forEach(value => value.remove());
         rows().forEach(row => row.classList.toggle('empty-mission', !hasData(row)));
-        document.querySelectorAll('#pdfholder input, #pdfholder [data-field="arrdep"]').forEach(input => {
+        document.querySelectorAll('#pdfholder input, #pdfholder textarea, #pdfholder [data-field="arrdep"]').forEach(input => {
             const value = document.createElement('span');
             value.className = 'print-value'; value.textContent = input.value || '\u00a0';
             input.after(value);
