@@ -1,230 +1,293 @@
-// Function to format date and time as DD MMM YY TTTT
-const parkingSpaces = {
-    ws1: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
-    ws2: ["16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"],
-    c: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-    f: ["1", "2", "3", "4"],
-    lm: ["1", "2", "3", "4"],
-    fd: ["1L", "1R", "2L", "2R", "3L", "3R", "4L", "4R", "5L", "5R", "6L", "5R", "7L", "7R", "8L", "8R", "9L", "9R", "10L", "10R", "11L", "11R", "12L", "12R"],
-    tr: ["7", "8", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"],
-    nd: ["1", "2"]
+// The printed priority key is the source for these pairings.
+const priorityMap = { '355 FS': '4a', '356 FS': '4b', '18 FIS': '4c', '210 RQS': '5', '168 ARWG': '6', Transient: '7' };
+const aliases = { '355': '355 FS', '355TH': '355 FS', '356': '356 FS', '356TH': '356 FS', '18': '18 FIS', '18TH': '18 FIS', '168': '168 ARWG', '168TH': '168 ARWG', '210': '210 RQS', '210TH': '210 RQS', '210 RESCUE SQ': '210 RQS', TRANSIENTS: 'Transient' };
+const range = (prefix, start, end) => Array.from({ length: end - start + 1 }, (_, i) => `${prefix}${i + start}`);
+const sharedSpots = [...range('C', 1, 12), ...range('F', 1, 4), ...range('LM', 1, 4)];
+const parkingOptions = {
+    '355 FS': [...range('WS', 17, 32), ...sharedSpots],
+    '356 FS': [...range('WS', 1, 16), ...sharedSpots],
+    '18 FIS': Array.from({ length: 12 }, (_, i) => [`FD${i + 1}L`, `FD${i + 1}R`]).flat(),
+    '168 ARWG': [7, 8, ...Array.from({ length: 12 }, (_, i) => i + 11)].map(n => `TR${n}`),
+    '210 RQS': ['ND1', 'ND2']
+};
+
+function parseTime(value) {
+    const text = value.trim().toUpperCase().replace(/L$/, '').trim();
+    const match = text.match(/^(\d{1,2}):(\d{2})$/) || text.match(/^(\d{1,2})(\d{2})$/);
+    if (!match) return null;
+    const hours = Number(match[1]), minutes = Number(match[2]);
+    if (hours === 24 && minutes === 0) return 1440;
+    return hours < 24 && minutes < 60 ? hours * 60 + minutes : null;
 }
 
-const tableData = {
-    time: [],
-    arrdep: [],
-    squadron: [],
-    priority: [],
-    parkingSpots: [],
-    arrdepO: ['ARR', 'DEP', ' '],
-    squadronO: ["18th", "168th", "210th", "355th", "356th", "Transient"],
-    priorityO: ["1", "2", "3", "4a", "4b", "4c", "5", "6", "7"],
-    priorityMap: {
-        "18th": "4c",
-        "168th": "6",
-        "210th": "5",
-        "355th": "4a",
-        "356th": "4b",
-        "Transient": "7"
-    },
-    squadronMap: {
-        "18th": "fis",
-        "168th": "guard",
-        "210th": "rescue",
-        "355th": "falcons",
-        "356th": "demons",
-    },
-    parkingSpotsO: {
-        fis: parkingSpaces.fd,
-        guard: parkingSpaces.tr,
-        rescue: parkingSpaces.nd,
-        falcons: [...parkingSpaces.ws2, ...parkingSpaces.c, ...parkingSpaces.f, ...parkingSpaces.lm],
-        demons: [...parkingSpaces.ws1, ...parkingSpaces.c, ...parkingSpaces.f, ...parkingSpaces.lm],
-    },
-
-    parkingSpotsS: {
-        fis: [],
-        guard: [],
-        rescue: [],
-        falcons: [],
-        demons: []
+// Accept both compact groups and the older WS1, WS2 notation.
+function parseParking(text) {
+    const spots = [];
+    let prefix = '';
+    for (const token of text.split(/[,;&]/).map(part => part.trim()).filter(Boolean)) {
+        const group = token.match(/^(WS|C|FD|TR|LM|F|ND)\s*:\s*(.*)$/i);
+        let value = token;
+        if (group) { prefix = group[1].toUpperCase(); value = group[2].trim(); }
+        const full = value.match(/^(WS|C|FD|TR|LM|F|ND)\s*(\d+[LR]?)$/i);
+        if (full) { prefix = full[1].toUpperCase(); spots.push(prefix + full[2].toUpperCase()); }
+        else if (/^\d+[LR]?$/i.test(value) && prefix) spots.push(prefix + value.toUpperCase());
+        else { if (value) spots.push(value); prefix = ''; }
     }
+    return [...new Set(spots)];
 }
 
+function formatParking(spots) {
+    const groups = new Map(), other = [];
+    for (const spot of spots) {
+        const match = spot.match(/^(WS|C|FD|TR|LM|F|ND)(\d+[LR]?)$/i);
+        if (!match) { other.push(spot); continue; }
+        const prefix = match[1].toUpperCase();
+        if (!groups.has(prefix)) groups.set(prefix, new Set());
+        groups.get(prefix).add(match[2].toUpperCase());
+    }
+    return [...groups].map(([prefix, values]) => `${prefix}: ${[...values].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).join(', ')}`).concat(other).join(' & ');
+}
 
 function formatDateTime(date) {
-    const day = date.getDate().toString().padStart(2, '0');
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = monthNames[date.getMonth()];
-    const year = date.getFullYear().toString().slice(-2);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-
-    return `${day} ${month} ${year} ${hours}${minutes}L`;
+    const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()];
+    return `${String(date.getDate()).padStart(2, '0')} ${month} ${String(date.getFullYear()).slice(-2)} ${String(date.getHours()).padStart(2, '0')}${String(date.getMinutes()).padStart(2, '0')}L`;
 }
 
-// Function to set the current date and time to the input field
-function setCurrentDateTime() {
-    const now = new Date();
-    const formattedDateTime = formatDateTime(now);
-    document.getElementById('CAOvar').value = formattedDateTime;
-    document.getElementById('SRPvar').value = formattedDateTime.slice(0, -5);
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const body = document.querySelector('#dynamicTable tbody');
+    const status = document.getElementById('snow-status');
+    const fields = ['time', 'arrdep', 'squadron', 'priority', 'parking'];
+    let nextId = 0;
+    const get = (row, field) => row.querySelector(`[data-field="${field}"]`);
+    const rows = () => [...body.querySelectorAll('.mission-row')];
+    const hasData = row => fields.some(field => field !== 'arrdep' && get(row, field).value.trim()) || get(row, 'arrdep').value === 'DEP';
+    const sharedParking = new Map();
+    const canonicalSquadron = value => Object.keys(priorityMap).find(unit => unit.toUpperCase() === value.trim().toUpperCase()) || aliases[value.trim().toUpperCase()];
 
+    function makeList(id, values) {
+        const list = document.createElement('datalist');
+        list.id = id;
+        values.forEach(value => { const option = document.createElement('option'); option.value = value; list.append(option); });
+        document.body.append(list);
+    }
+    makeList('snow-squadrons', Object.keys(priorityMap));
+    makeList('snow-priorities', ['1', '2', '3', ...Object.values(priorityMap)]);
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    const tableBody = document.getElementById('dynamicTable').getElementsByTagName('tbody')[0];
-
-    function createNestedTable(rowIndex, cell) {
-        const selectedUnit = tableData.squadron[rowIndex];
-        var selectedOptions = cell.textContent.split(',').map(option => option.trim()).filter(option => option !== "");
-        const nestedRow = tableBody.insertRow(rowIndex + 1);
-        nestedRow.id = 'optionstable';
-        const nestedCell = nestedRow.insertCell(0);
-        nestedCell.colSpan = 5;
-
-        const nestedTable = document.createElement('table');
-        nestedTable.style.width = '100%';
-        nestedTable.style.borderCollapse = 'collapse';
-        nestedTable.className = 'nested-table';
-
-        const nestedTableRow = nestedTable.insertRow(0);
-
-        tableData.parkingSpotsO[selectedUnit].forEach(option => {
-            const optionCell = nestedTableRow.insertCell();
-            optionCell.textContent = option;
-            optionCell.style.border = '1px solid #ccc';
-            optionCell.style.padding = '5px';
-            optionCell.style.cursor = 'pointer';
-            optionCell.style.textAlign = 'center';
-            optionCell.style.backgroundColor = selectedOptions.includes(option) ? '#b3d9ff' : '#fff';
-
-            optionCell.addEventListener('click', function () {
-                if (selectedOptions.includes(option)) {
-                    selectedOptions.splice(selectedOptions.indexOf(option), 1);
-                    optionCell.style.backgroundColor = '#fff';
-                } else {
-                    selectedOptions.push(option);
-                    optionCell.style.backgroundColor = '#b3d9ff';
-                }
-                tableData.parkingSpotsS[selectedUnit] = selectedOptions;  // Update selected parking spots
-                cell.textContent = selectedOptions.join(', ');
-            });
+    function syncParking(row) {
+        const input = get(row, 'parking');
+        if (row.dataset.parkingDirty !== 'true') return;
+        input.value = formatParking(parseParking(input.value));
+        delete row.dataset.parkingDirty;
+        const unit = canonicalSquadron(get(row, 'squadron').value);
+        if (!unit || !/^4[abc]$/.test(get(row, 'priority').value.trim().toLowerCase())) return;
+        sharedParking.set(unit, input.value);
+        rows().filter(other => canonicalSquadron(get(other, 'squadron').value) === unit).forEach(other => {
+            get(other, 'parking').value = input.value;
+            delete other.dataset.parkingDirty;
         });
-        nestedCell.appendChild(nestedTable);
+    }
+    function closeParking() {
+        body.querySelectorAll('.parking-picker').forEach(picker => {
+            const owner = rows().find(row => row.dataset.id === picker.dataset.owner);
+            if (owner) syncParking(owner);
+            picker.remove();
+        });
     }
 
-    // Function to add a new row to the table
     function addRow() {
-        const row = tableBody.insertRow();
-        const rowIndex = tableBody.rows.length - 1; // Get the current row index
+        const row = body.insertRow();
+        row.className = 'mission-row';
+        row.dataset.id = String(nextId++);
+        fields.forEach((field, index) => {
+            const cell = row.insertCell();
+            const input = document.createElement(field === 'arrdep' ? 'button' : 'input');
+            if (field === 'arrdep') {
+                input.type = 'button'; input.value = 'ARR'; input.textContent = 'ARR';
+                input.addEventListener('click', () => { input.value = input.value === 'ARR' ? 'DEP' : 'ARR'; input.textContent = input.value; ensureBlank(); });
+            } else input.type = 'text';
+            input.dataset.field = field;
+            input.setAttribute('aria-label', ['Time (local)', 'Arrival or departure', 'Squadron', 'Priority', 'Parking spots'][index]);
+            input.autocomplete = 'off';
+            if (field === 'squadron') input.setAttribute('list', 'snow-squadrons');
+            if (field === 'priority') input.setAttribute('list', 'snow-priorities');
+            if (field === 'time') input.title = 'Local time: HHMM or HH:MM (0000–2400)';
+            cell.append(input);
+        });
+        const actions = document.createElement('span');
+        actions.className = 'row-actions';
+        const parking = document.createElement('button');
+        parking.type = 'button'; parking.textContent = 'Spots'; parking.title = 'Choose parking spots';
+        parking.addEventListener('click', () => {
+            const wasOpen = row.nextElementSibling?.classList.contains('parking-picker');
+            closeParking();
+            if (wasOpen) return;
+            const options = parkingOptions[canonicalSquadron(get(row, 'squadron').value)];
+            if (!options) { status.textContent = 'Enter parking spots directly for this squadron.'; get(row, 'parking').focus(); return; }
+            const picker = document.createElement('tr'); picker.className = 'parking-picker'; picker.dataset.owner = row.dataset.id;
+            const cell = picker.insertCell(); cell.colSpan = 5;
+            options.forEach(spot => {
+                const button = document.createElement('button'); button.type = 'button'; button.textContent = spot;
+                const selected = () => parseParking(get(row, 'parking').value);
+                button.setAttribute('aria-pressed', String(selected().includes(spot)));
+                button.addEventListener('click', () => {
+                    const values = selected();
+                    get(row, 'parking').value = formatParking(values.includes(spot) ? values.filter(value => value !== spot) : [...values, spot]);
+                    button.setAttribute('aria-pressed', String(selected().includes(spot)));
+                    row.dataset.parkingDirty = 'true';
+                    ensureBlank();
+                });
+                cell.append(button);
+            });
+            row.after(picker);
+        });
+        const remove = document.createElement('button');
+        remove.type = 'button'; remove.textContent = 'Ã—'; remove.setAttribute('aria-label', 'Remove flight');
+        remove.addEventListener('click', () => { closeParking(); row.remove(); ensureBlank(); });
+        actions.append(parking, remove); row.cells[4].append(actions);
+        return row;
+    }
 
-        for (let i = 0; i < 5; i++) {
-            const cell = row.insertCell(i);
-            if (i === 0) {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.addEventListener('input', function () {
-                    tableData.time[rowIndex] = input.value;
-                });
-                cell.appendChild(input);
-            } else if (i === 1) {
-                cell.textContent = "ARR";
-                cell.addEventListener('click', function () {
-                    cell.textContent = cell.textContent === "ARR" ? "DEP" : "ARR";
-                    tableData.arrdep[rowIndex] = cell.textContent;  // Update arr/dep in tableData
-                });
-            } else if (i === 2) {
-                const input = document.createElement('input');
-                input.setAttribute('list', `options3-${rowIndex}`);
-                const dataList = document.createElement('datalist');
-                dataList.id = `options3-${rowIndex}`;
-
-                tableData.squadronO.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    dataList.appendChild(opt);
-                });
-
-                input.addEventListener('input', function () {
-                    const correspondingValue = tableData.priorityMap[input.value];
-                    tableData.squadron[rowIndex] = tableData.squadronMap[input.value];  // Update squadron
-                    if (correspondingValue) {
-                        const nextCell = row.cells[3].querySelector('input');
-                        nextCell.value = correspondingValue;
-                        tableData.priority[rowIndex] = correspondingValue;  // Update priority
-                    }
-                });
-
-                cell.appendChild(input);
-                cell.appendChild(dataList);
-            } else if (i === 3) {
-                const input = document.createElement('input');
-                input.setAttribute('list', `options4-${rowIndex}`);
-                const dataList = document.createElement('datalist');
-                dataList.id = `options4-${rowIndex}`;
-
-                tableData.priorityO.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    dataList.appendChild(opt);
-                });
-
-                input.addEventListener('input', function () {
-                    tableData.priority[rowIndex] = input.value;  // Update priority in tableData
-                });
-
-                cell.appendChild(input);
-                cell.appendChild(dataList);
-            } else if (i === 4) {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.addEventListener('input', function () {
-                    tableData.parkingSpots[rowIndex] = input.value;  // Update parking spots
-                });
-                cell.appendChild(input);
-                cell.addEventListener('click', function () {
-                    if (document.getElementById('optionstable')) {
-                        document.getElementById('optionstable').remove();
-                    } else {
-                        if (tableData.squadron[rowIndex]) {
-                            createNestedTable(rowIndex, cell);
-                        }
-                    }
-                });
+    function ensureBlank() {
+        if (!rows().some(row => !hasData(row))) addRow();
+        while (rows().length < 5) addRow();
+    }
+    function sortRows() {
+        closeParking();
+        rows().sort((a, b) => {
+            const aTime = hasData(a) ? (parseTime(get(a, 'time').value) ?? Infinity) : Infinity;
+            const bTime = hasData(b) ? (parseTime(get(b, 'time').value) ?? Infinity) : Infinity;
+            return aTime - bTime || Number(hasData(b)) - Number(hasData(a)) || Number(a.dataset.id) - Number(b.dataset.id);
+        }).forEach(row => body.append(row));
+        const blanks = rows().filter(row => !hasData(row));
+        while (blanks.length > 1 && rows().length > 5) blanks.pop().remove();
+        ensureBlank();
+    }
+    function validateTime(input) {
+        const invalid = input.value.trim() !== '' && parseTime(input.value) === null;
+        input.setCustomValidity(invalid ? 'Enter a local time such as 0630 or 06:30 (0000–2400).' : '');
+        input.setAttribute('aria-invalid', String(invalid));
+    }
+    body.addEventListener('input', event => {
+        const input = event.target;
+        const row = input.closest('.mission-row');
+        if (!row || !input.dataset.field) return;
+        if (input.dataset.field === 'squadron') {
+            const unit = canonicalSquadron(input.value);
+            if (unit) get(row, 'priority').value = priorityMap[unit];
+        }
+        if (input.dataset.field === 'priority') {
+            const priority = input.value.trim().toLowerCase().replace(/^([abc])$/, '4$1');
+            const unit = Object.keys(priorityMap).find(key => priorityMap[key] === priority);
+            if (unit) get(row, 'squadron').value = unit;
+        }
+        if (input.dataset.field === 'time') validateTime(input);
+        if (input.dataset.field === 'parking') row.dataset.parkingDirty = 'true';
+        ensureBlank();
+    });
+    body.addEventListener('change', () => ensureBlank());
+    body.addEventListener('focusout', event => {
+        const row = event.target.closest('.mission-row') || rows().find(item => item.dataset.id === event.target.closest('.parking-picker')?.dataset.owner);
+        if (!row) return;
+        const destination = event.relatedTarget;
+        if (destination?.closest('.parking-picker')?.dataset.owner !== row.dataset.id &&
+            !(row.contains(destination) && destination?.closest('.row-actions'))) syncParking(row);
+        if (event.target.dataset.field === 'time') {
+            const minutes = parseTime(event.target.value);
+            if (minutes !== null) event.target.value = `${String(Math.floor(minutes / 60)).padStart(2, '0')}${String(minutes % 60).padStart(2, '0')}`;
+        }
+        if (event.target.dataset.field === 'squadron') event.target.value = canonicalSquadron(event.target.value) || event.target.value;
+        if (event.target.dataset.field === 'priority') event.target.value = event.target.value.trim().toLowerCase().replace(/^([abc])$/, '4$1');
+        // Wait until the next control receives focus; do not move a row during entry.
+        setTimeout(() => {
+            const focused = document.activeElement;
+            if (focused.closest('.parking-picker')?.dataset.owner === row.dataset.id) return;
+            if (focused !== get(row, 'parking') && !(row.contains(focused) && focused.closest('.row-actions'))) syncParking(row);
+            if (!row.contains(focused) && !focused.closest('.parking-picker') && !focused.closest('.mission-row')) sortRows();
+            else if (focused.closest('.mission-row') !== row && !focused.closest('.parking-picker')) {
+                // Moving existing nodes preserves values, but browsers can drop focus.
+                sortRows();
+                if (focused.isConnected) focused.focus({ preventScroll: true });
             }
-        }
-    }
+        }, 0);
+    });
 
-    // Function to add initial rows
-    function addInitialRows() {
-        for (let i = 0; i < 5; i++) {
-            addRow();
-        }
-    }
-
-    // Function to check if the last row is being filled
-    function checkLastRow() {
-        const rows = tableBody.getElementsByTagName('tr');
-        const lastRowInputs = rows[rows.length - 1].getElementsByTagName('input');
-        let allFilled = true;
-
-        for (let input of lastRowInputs) {
-            if (input.value === '') {
-                allFilled = false;
-                break;
+    const windowUnits = ['18 FIS', '168 ARWG', '356 FS', '210 RQS', '355 FS', '3WG/JBER'];
+    const windowInputs = [...document.querySelectorAll('#local input')];
+    const hhmm = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0')}${String(minutes % 60).padStart(2, '0')}`;
+    function syncWindows(input) {
+        if (input.dataset.lastWindows === input.value.trim()) return;
+        const unit = input.dataset.unit;
+        const text = input.value.trim();
+        const windows = [];
+        for (const part of text ? text.split(/[,;]/) : []) {
+            const pair = part.trim().split(/\s*[-–—]\s*/);
+            const start = pair.length === 2 ? parseTime(pair[0]) : null;
+            const end = pair.length === 2 ? parseTime(pair[1]) : null;
+            if (start === null || end === null || start >= end) {
+                input.setCustomValidity('Use same-day windows such as 0830-1000, 1200-1330, with departure before arrival.');
+                input.setAttribute('aria-invalid', 'true');
+                status.textContent = `${unit}: enter windows like 0830-1000, 1200-1330. Existing flights are kept until the entry is valid.`;
+                return;
             }
+            windows.push([start, end]);
         }
-
-        if (allFilled) {
-            addRow();
-        }
+        input.setCustomValidity(''); input.setAttribute('aria-invalid', 'false');
+        const existing = rows().filter(row => row.dataset.windowUnit === unit);
+        const used = new Set();
+        windows.flatMap(([start, end]) => [[start, 'DEP'], [end, 'ARR']]).forEach(([time, movement], index) => {
+            // Match unchanged times first, then reuse a row from the edited window.
+            let row = existing.find(candidate => !used.has(candidate) && get(candidate, 'time').value === hhmm(time) && get(candidate, 'arrdep').value === movement);
+            row ||= existing.find(candidate => !used.has(candidate) && candidate.dataset.windowIndex === String(index));
+            row ||= addRow();
+            used.add(row); row.dataset.windowUnit = unit; row.dataset.windowIndex = String(index);
+            get(row, 'time').value = hhmm(time);
+            get(row, 'arrdep').value = movement; get(row, 'arrdep').textContent = movement;
+            get(row, 'squadron').value = unit; get(row, 'priority').value = priorityMap[unit] || '';
+            if (sharedParking.has(unit)) get(row, 'parking').value = sharedParking.get(unit);
+        });
+        existing.filter(row => !used.has(row)).forEach(row => row.remove());
+        input.dataset.lastWindows = text;
+        status.textContent = unit === '3WG/JBER' && windows.length ? '3WG/JBER flights added. Assign their priorities manually; this unit is not in the priority key.' : '';
+        sortRows();
     }
+    windowInputs.forEach((input, index) => {
+        input.dataset.unit = windowUnits[index]; input.dataset.lastWindows = '';
+        input.setAttribute('aria-label', `${windowUnits[index]} flying windows`);
+        input.title = 'Local departure-arrival windows, e.g. 0830-1000, 1200-1330';
+        input.addEventListener('blur', () => syncWindows(input));
+    });
 
-    // Add initial rows
-    addInitialRows();
+    function preparePrint() {
+        windowInputs.forEach(syncWindows);
+        rows().forEach(syncParking);
+        sortRows();
+        document.querySelectorAll('.print-value').forEach(value => value.remove());
+        rows().forEach(row => row.classList.toggle('empty-mission', !hasData(row)));
+        document.querySelectorAll('#pdfholder input, #pdfholder [data-field="arrdep"]').forEach(input => {
+            const value = document.createElement('span');
+            value.className = 'print-value'; value.textContent = input.value || '\u00a0';
+            input.after(value);
+        });
+    }
+    window.addEventListener('beforeprint', preparePrint);
+    window.addEventListener('afterprint', () => document.querySelectorAll('.print-value').forEach(value => value.remove()));
+    document.getElementById('generatePDF').addEventListener('click', () => {
+        windowInputs.forEach(syncWindows);
+        const badWindow = windowInputs.find(input => !input.checkValidity());
+        if (badWindow) { badWindow.reportValidity(); return; }
+        const invalid = rows().find(row => hasData(row) && parseTime(get(row, 'time').value) === null);
+        if (invalid) {
+            status.textContent = 'Add a valid local time to each flight before exporting.';
+            const input = get(invalid, 'time'); input.focus();
+            input.setCustomValidity('Enter a local time such as 0630 or 06:30.'); input.reportValidity();
+            return;
+        }
+        status.textContent = '';
+        preparePrint();
+        window.print();
+    });
+    const now = formatDateTime(new Date());
+    document.getElementById('CAOvar').value = now;
+    document.getElementById('SRPvar').value = now.slice(0, -6);
+    ensureBlank();
 });
-
-window.onload = setCurrentDateTime;
