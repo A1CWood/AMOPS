@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const row = body.insertRow();
         row.className = 'mission-row';
         row.dataset.id = String(nextId++);
+        row.insertCell().className = 'mission-index';
         fields.forEach((field, index) => {
             const cell = row.insertCell();
             const input = document.createElement(field === 'arrdep' ? 'button' : 'input');
@@ -124,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const options = parkingOptions[canonicalSquadron(get(row, 'squadron').value)];
             if (!options) { status.textContent = 'Enter parking spots directly for this squadron.'; get(row, 'parking').focus(); return; }
             const picker = document.createElement('tr'); picker.className = 'parking-picker'; picker.dataset.owner = row.dataset.id;
-            const cell = picker.insertCell(); cell.colSpan = 5;
+            const cell = picker.insertCell(); cell.colSpan = 6;
             options.forEach(spot => {
                 const button = document.createElement('button'); button.type = 'button'; button.textContent = spot;
                 const selected = () => parseParking(get(row, 'parking').value);
@@ -143,21 +144,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const remove = document.createElement('button');
         remove.type = 'button'; remove.textContent = 'X'; remove.setAttribute('aria-label', 'Remove flight');
         remove.addEventListener('click', () => { closeParking(); row.remove(); ensureBlank(); });
-        actions.append(parking, remove); row.cells[4].append(actions);
+        actions.append(parking, remove); get(row, 'parking').closest('td').append(actions);
         return row;
     }
 
     function ensureBlank() {
         if (!rows().some(row => !hasData(row))) addRow();
         while (rows().length < 5) addRow();
+        renumberRows();
+    }
+    function compareRows(a, b) {
+        const aTime = hasData(a) ? (parseTime(get(a, 'time').value) ?? Infinity) : Infinity;
+        const bTime = hasData(b) ? (parseTime(get(b, 'time').value) ?? Infinity) : Infinity;
+        return aTime - bTime || Number(hasData(b)) - Number(hasData(a)) || Number(a.dataset.id) - Number(b.dataset.id);
+    }
+    function renumberRows() {
+        let index = 0;
+        rows().sort(compareRows).forEach(row => {
+            row.querySelector('.mission-index').textContent = hasData(row) ? String(++index) : '';
+        });
     }
     function sortRows() {
         closeParking();
-        rows().sort((a, b) => {
-            const aTime = hasData(a) ? (parseTime(get(a, 'time').value) ?? Infinity) : Infinity;
-            const bTime = hasData(b) ? (parseTime(get(b, 'time').value) ?? Infinity) : Infinity;
-            return aTime - bTime || Number(hasData(b)) - Number(hasData(a)) || Number(a.dataset.id) - Number(b.dataset.id);
-        }).forEach(row => body.append(row));
+        rows().sort(compareRows).forEach(row => body.append(row));
         const blanks = rows().filter(row => !hasData(row));
         while (blanks.length > 1 && rows().length > 5) blanks.pop().remove();
         ensureBlank();

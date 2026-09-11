@@ -317,33 +317,33 @@ h2 {
 }
 
 /* Set specific widths for each column */
-#dynamicTable th:nth-child(1),
-#dynamicTable td:nth-child(1) {
+#dynamicTable th:nth-child(2),
+#dynamicTable td:nth-child(2) {
     width: 5%;
     /* First column width */
 }
 
-#dynamicTable th:nth-child(2),
-#dynamicTable td:nth-child(2) {
+#dynamicTable th:nth-child(3),
+#dynamicTable td:nth-child(3) {
     width: 5%;
     text-align: center;
     /* Second column width */
 }
 
-#dynamicTable th:nth-child(3),
-#dynamicTable td:nth-child(3) {
+#dynamicTable th:nth-child(4),
+#dynamicTable td:nth-child(4) {
     max-width: 10%;
     /* Third column width */
 }
 
-#dynamicTable th:nth-child(4),
-#dynamicTable td:nth-child(4) {
+#dynamicTable th:nth-child(5),
+#dynamicTable td:nth-child(5) {
     width: 5%;
     /* Fourth column width */
 }
 
-#dynamicTable th:nth-child(5),
-#dynamicTable td:nth-child(5) {
+#dynamicTable th:nth-child(6),
+#dynamicTable td:nth-child(6) {
     width: 75%;
     /* Fifth column width */
 }
@@ -369,11 +369,11 @@ h2 {
 .snow-tools p { font-size: 13px; margin: 6px 0; }
 #generatePDF { padding: 9px 16px; cursor: pointer; }
 #dynamicTable { table-layout: fixed; }
-#dynamicTable th:nth-child(1), #dynamicTable td:nth-child(1) { width: 9%; }
-#dynamicTable th:nth-child(2), #dynamicTable td:nth-child(2) { width: 10%; }
-#dynamicTable th:nth-child(3), #dynamicTable td:nth-child(3) { width: 17%; }
-#dynamicTable th:nth-child(4), #dynamicTable td:nth-child(4) { width: 9%; }
-#dynamicTable th:nth-child(5), #dynamicTable td:nth-child(5) { width: 55%; }
+#dynamicTable th:nth-child(2), #dynamicTable td:nth-child(2) { width: 9%; }
+#dynamicTable th:nth-child(3), #dynamicTable td:nth-child(3) { width: 10%; }
+#dynamicTable th:nth-child(4), #dynamicTable td:nth-child(4) { width: 17%; }
+#dynamicTable th:nth-child(5), #dynamicTable td:nth-child(5) { width: 9%; }
+#dynamicTable th:nth-child(6), #dynamicTable td:nth-child(6) { width: 55%; }
 #dynamicTable td input, #dynamicTable td select { font: 12px Arial, sans-serif; min-width: 0; height: 24px; }
 #dynamicTable td select { width: 100%; border: 0; background: white; }
 #dynamicTable td:last-child { position: relative; }
@@ -436,3 +436,12 @@ h2 {
     #pdfholder tr > :last-child { border-right: 0; }
     #pdfholder .wxinsidetable { border-right: 0; }
 }
+
+/* Event numbering remains visible in the PDF; spare input rows stay unnumbered. */
+#dynamicTable th:nth-child(1), #dynamicTable td:nth-child(1) { width: 6%; text-align: center; }
+#dynamicTable th:nth-child(2), #dynamicTable td:nth-child(2) { width: 9%; text-align: left; }
+#dynamicTable th:nth-child(3), #dynamicTable td:nth-child(3) { width: 10%; text-align: center; }
+#dynamicTable th:nth-child(4), #dynamicTable td:nth-child(4) { width: 16%; max-width: none; }
+#dynamicTable th:nth-child(5), #dynamicTable td:nth-child(5) { width: 9%; }
+#dynamicTable th:nth-child(6), #dynamicTable td:nth-child(6) { width: 50%; }
+#dynamicTable .mission-index { font: 12px Arial, sans-serif; font-variant-numeric: tabular-nums; }
