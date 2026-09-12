@@ -309,4 +309,81 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('CAOvar').value = now;
     document.getElementById('SRPvar').value = now.slice(0, -6);
     ensureBlank();
+    // Static form field order is part of draft schema version 1.
+    const formInputs = [...document.querySelectorAll('#pdfholder input, #pdfholder textarea')]
+        .filter(input => !input.closest('#dynamicTable'));
+    const draftStatus = document.getElementById('draft-status');
+    const draftFile = document.getElementById('draftFile');
+    let dirty = false;
+    function markDirty() {
+        dirty = true;
+        draftStatus.textContent = 'Unsaved changes — save a JSON draft before leaving this page.';
+    }
+    document.getElementById('pdfholder').addEventListener('input', markDirty);
+    document.getElementById('pdfholder').addEventListener('change', markDirty);
+    document.getElementById('pdfholder').addEventListener('click', event => {
+        if (event.target.closest('button')) markDirty();
+    });
+    window.addEventListener('beforeunload', event => {
+        if (dirty) { event.preventDefault(); event.returnValue = ''; }
+    });
+    document.getElementById('saveDraft').addEventListener('click', () => {
+        windowInputs.forEach(syncWindows);
+        rows().forEach(syncParking);
+        sortRows();
+        const data = {
+            type: SnowDrafts.type, version: SnowDrafts.version, savedAt: new Date().toISOString(),
+            form: formInputs.map(input => input.value),
+            windows: windowInputs.map(input => input.dataset.lastWindows || ''),
+            flights: rows().filter(hasData).map(row => ({
+                ...Object.fromEntries(fields.map(field => [field, get(row, field).value])),
+                windowUnit: row.dataset.windowUnit || null,
+                windowIndex: row.dataset.windowIndex === undefined ? null : Number(row.dataset.windowIndex)
+            })),
+            sharedParking: [...sharedParking]
+        };
+        try {
+            SnowDrafts.validate(data, formInputs.length);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            if (blob.size > 2 * 1024 * 1024) throw new Error('Draft exceeds the 2 MB limit. Shorten unusually long entries and try again.');
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            const dateLabel = document.getElementById('SRPvar').value.trim().replace(/[^a-zA-Z0-9-]+/g, '-').slice(0, 60) || data.savedAt.slice(0, 10);
+            link.download = `Snow-Priorities-${dateLabel}.json`;
+            document.body.append(link); link.click(); link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 30000);
+            dirty = false;
+            draftStatus.textContent = `Draft download requested at ${new Date().toLocaleTimeString()}. Confirm it is saved in the shared folder.`;
+        } catch (error) { draftStatus.textContent = `Could not save draft: ${error.message}`; }
+    });
+    document.getElementById('loadDraft').addEventListener('click', () => draftFile.click());
+    draftFile.addEventListener('change', async () => {
+        const file = draftFile.files[0];
+        if (!file) return;
+        try {
+            if (file.size > 2 * 1024 * 1024) throw new Error('Draft is larger than the 2 MB limit.');
+            const data = SnowDrafts.validate(JSON.parse(await file.text()), formInputs.length);
+            if (dirty && !window.confirm('Replace the current unsaved form with this draft?')) return;
+            closeParking(); body.replaceChildren(); sharedParking.clear();
+            data.sharedParking.forEach(([unit, parking]) => sharedParking.set(unit, parking));
+            formInputs.forEach((input, index) => {
+                input.value = data.form[index]; input.setCustomValidity(''); input.setAttribute('aria-invalid', 'false');
+            });
+            windowInputs.forEach((input, index) => { input.dataset.lastWindows = data.windows[index]; });
+            data.flights.forEach(flight => {
+                const row = addRow();
+                fields.forEach(field => { get(row, field).value = flight[field]; });
+                get(row, 'arrdep').textContent = flight.arrdep;
+                if (flight.windowUnit !== null) row.dataset.windowUnit = flight.windowUnit;
+                if (flight.windowIndex !== null) row.dataset.windowIndex = String(flight.windowIndex);
+                validateTime(get(row, 'time'));
+            });
+            document.querySelectorAll('.print-value').forEach(value => value.remove());
+            sortRows(); resizeWeatherAdvisories(); dirty = false; status.textContent = '';
+            draftStatus.textContent = `Loaded ${file.name}. Saved ${new Date(data.savedAt).toLocaleString()}.`;
+        } catch (error) {
+            draftStatus.textContent = `Could not load draft: ${error.message}`;
+        } finally { draftFile.value = ''; }
+    });
 });

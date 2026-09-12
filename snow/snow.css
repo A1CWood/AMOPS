@@ -367,6 +367,8 @@ h2 {
 /* Editing controls stay outside the printed document. */
 .snow-tools { max-width: 816px; margin: 16px auto 32px; padding: 12px 20px; background: #333; border-radius: 6px; }
 .snow-tools p { font-size: 13px; margin: 6px 0; }
+.draft-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.draft-actions button { padding: 9px 16px; cursor: pointer; }
 #generatePDF { padding: 9px 16px; cursor: pointer; }
 #dynamicTable { table-layout: fixed; }
 #dynamicTable th:nth-child(2), #dynamicTable td:nth-child(2) { width: 9%; }

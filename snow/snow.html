@@ -210,6 +210,13 @@
         </div>
     </main>
     <div class="snow-tools">
+        <div class="draft-actions">
+            <button id="saveDraft" type="button">Save draft (JSON)</button>
+            <button id="loadDraft" type="button">Load draft</button>
+            <input id="draftFile" type="file" accept=".json,application/json" hidden>
+        </div>
+        <p>Save the JSON draft in your shared folder so another person can load and update it. Keep the PDF for distribution. Coordinate one editor at a time.</p>
+        <p id="draft-status" role="status" aria-live="polite">No draft saved or loaded this session.</p>
         <p>Enter local times as HHMM or HH:MM. Flights sort when you leave a row; a blank row is added as you type.</p>
         <p>Flying windows create DEP/ARR pairs when you leave the field. Enter NONE for no flying. Editing, clearing, or entering NONE updates that unit's generated flights.</p>
         <p>Click ARR to switch to DEP. Parking edits on a priority 4 flight copy to that squadron's other flights when you leave the parking entry.</p>
@@ -219,6 +226,7 @@
         <p id="snow-status" role="status" aria-live="polite"></p>
     </div>
 
+    <script src="./snow-drafts.js"></script>
     <script src="./snow.js"></script>
 </body>
 
